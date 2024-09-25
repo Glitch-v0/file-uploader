@@ -24,4 +24,12 @@ model User {
   id            Int    @id @default(autoincrement())
   username      String @unique
   password_hash String
+  uploads       File[]
+}
+
+model File {
+  id         Int    @id @default(autoincrement())
+  url        String
+  uploader   User   @relation(fields: [uploaderId], references: [id])
+  uploaderId Int
 }
