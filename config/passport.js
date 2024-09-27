@@ -1,6 +1,6 @@
-const passport = require("passport");
-const LocalStrategy = require("passport-local").Strategy;
-const validPassword = require("../lib/passwordUtils").validPassword;
+import passport from "passport";
+import { Strategy as LocalStrategy } from "passport-local";
+import { validPassword, genPassword } from "../lib/passwordUtils.js";
 
 const verifyCallback = async (username, password, done) => {
   try {

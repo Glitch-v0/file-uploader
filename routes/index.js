@@ -1,9 +1,11 @@
-const router = require("express").Router();
-const passport = require("passport");
-const genPassword = require("../lib/passwordUtils").genPassword;
-// const { body, validationResult } = require("express-validator");
-// const { nameValidationRules } = require("../validators/nameValidators");
-const multer = require("multer");
+import express from "express";
+import prismaClient from "../app.js";
+import multer from "multer";
+import { genPassword } from "../lib/passwordUtils.js";
+import { body, validationResult } from "express-validator";
+import { nameValidationRules } from "../lib/nameValidators.js";
+
+export const router = express.Router();
 const upload = multer({ dest: "./uploads/" });
 
 router.get("/", (req, res, next) => {
@@ -12,7 +14,7 @@ router.get("/", (req, res, next) => {
 
 router.post("/", async (req, res, next) => {
   const hashPassword = genPassword(req.body.password);
-  const newUser = await prisma.user.create({
+  const newUser = await prismaClient.user.create({
     data: {
       username: req.body.username,
       password_hash: hashPassword,
@@ -20,6 +22,7 @@ router.post("/", async (req, res, next) => {
       last_name: req.body.lastName,
     },
   });
+  console.log(`New user created! ${newUser}`);
   res.render("index", { sentValues: req.body });
 });
 
@@ -32,5 +35,3 @@ router.post("/upload", upload.single("file-upload"), (req, res, next) => {
   res.render("index");
   console.log(`File saved to ${req.file.path}`);
 });
-
-module.exports = router;

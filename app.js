@@ -1,12 +1,14 @@
-const express = require("express");
-const session = require("express-session");
-const { PrismaSessionStore } = require("@quixo3/prisma-session-store");
-const { PrismaClient } = require("@prisma/client");
-const passport = require("passport");
-const routes = require("./routes");
-const path = require("node:path");
-
-require("dotenv").config();
+import express from "express";
+import session from "express-session";
+import { PrismaSessionStore } from "@quixo3/prisma-session-store";
+import { PrismaClient } from "@prisma/client";
+import passport from "passport";
+import { router as routes } from "./routes/index.js";
+import path from "node:path";
+import { fileURLToPath } from "url";
+import "./config/passport.js";
+import dotenv from "dotenv";
+dotenv.config();
 
 const app = express();
 
@@ -14,20 +16,23 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // set up view engine
-app.set("views", path.join(__dirname, "views"));
+const __filename = fileURLToPath(import.meta.url); // get the resolved path to the file
+const __dirname = path.dirname(__filename); // get the name of the directory
+app.set("views", path.join(__dirname, "./views"));
 app.set("view engine", "ejs");
 
 // set up middleware to parse form data
 app.use(express.urlencoded({ extended: true }));
 
 // serve static files
-const assetsPath = path.join(__dirname, "public");
+const assetsPath = path.join(__dirname, "./public");
 app.use(express.static(assetsPath));
 
+let prismaClient = new PrismaClient();
 // Session setup
 app.use(
   session({
-    store: new PrismaSessionStore(new PrismaClient(), {
+    store: new PrismaSessionStore(prismaClient, {
       checkPeriod: 2 * 60 * 1000, //ms
       dbRecordIdIsSessionId: true,
       dbRecordIdFunction: undefined,
@@ -42,10 +47,11 @@ app.use(
 );
 
 // Passport setup
-require("./config/passport");
 app.use(passport.initialize());
 app.use(passport.session());
 
 app.use(routes);
 
 app.listen(3000, () => console.log("Server running on port 3000"));
+
+export default prismaClient;
