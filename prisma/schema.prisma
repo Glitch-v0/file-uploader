@@ -22,7 +22,9 @@ model Session {
 
 model User {
   id            Int    @id @default(autoincrement())
-  username      String @unique
+  email         String @unique
+  first_name    String
+  last_name     String
   password_hash String
   uploads       File[]
 }

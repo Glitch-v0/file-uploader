@@ -1,0 +1,88 @@
+body {
+  background-color: hsl(240, 10%, 15%);
+  color: hsl(240, 50%, 90%);
+  display: flex;
+  flex-direction: column;
+  place-content: center;
+  place-items: center;
+  text-align: center;
+  font-family: sans-serif;
+}
+
+header {
+  font-variant: small-caps;
+  text-decoration-thickness: 2px;
+}
+
+header h1::first-letter {
+  font-size: 3rem;
+}
+
+.index-forms-container {
+  display: flex;
+  gap: 2rem;
+}
+
+form {
+  background-color: hsl(235, 34%, 10%);
+  border-radius: 20px;
+  margin-top: 2rem;
+  padding: 1.25rem 1.25rem;
+  width: 325px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+form h1,
+form h2 {
+  font-size: 1.75rem;
+  color: #eee;
+  font-weight: 600;
+  margin: 0;
+}
+
+h1 {
+  font-size: 2.5rem;
+  letter-spacing: 2px;
+}
+
+h2 {
+  font-size: 2rem;
+}
+
+input {
+  background-color: hsl(240, 20%, 25%);
+  border-radius: 12px;
+  border: 0;
+  outline: 0;
+  color: #eee;
+  font-size: 1.25rem;
+  width: 100%;
+  text-align: center;
+}
+
+::placeholder {
+  color: hsl(240, 50%, 80%);
+  font-family: sans-serif;
+  text-align: center;
+}
+
+form button {
+  background-color: #08d;
+  border-radius: 12px;
+  border: 0;
+  box-sizing: border-box;
+  color: #eee;
+  cursor: pointer;
+  font-size: 1.25rem;
+  height: 2rem;
+  width: 100%;
+  margin-top: 1rem;
+}
+
+@media screen and (max-width: 800px) {
+  .index-forms-container {
+    flex-direction: column;
+  }
+}

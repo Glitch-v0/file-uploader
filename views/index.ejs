@@ -3,9 +3,17 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>File Uploader</title>
+    <title>Cloud Land | Register</title>
+    <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <%- include('partials/file-upload-form') %>
+    <header>
+      <h1>CLOUD LAND</h1>
+      <p>Login or register below so you can upload to the cloud.</p>
+    </header>
+    <div class="index-forms-container">
+      <%- include('partials/login-form') %> <%-
+      include('partials/register-form', {prefilledValues: sentValues}) %>
+    </div>
   </body>
 </html>

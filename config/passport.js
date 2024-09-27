@@ -8,6 +8,11 @@ const verifyCallback = async (username, password, done) => {
     //   "SELECT username, password_hash, id FROM users WHERE username = $1",
     //   [username]
     // );
+    const result = await prisma.user.findFirst({
+      where: {
+        username: username,
+      },
+    });
     const user = result.rows[0];
 
     if (!user) {
