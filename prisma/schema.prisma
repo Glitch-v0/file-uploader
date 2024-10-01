@@ -21,17 +21,48 @@ model Session {
 }
 
 model User {
-  id            Int    @id @default(autoincrement())
-  email         String @unique
+  id            String   @id @default(uuid()) @db.Uuid
+  email         String   @unique
   first_name    String
   last_name     String
   password_hash String
-  uploads       File[]
+  files         File[]
+  folders       Folder[]
+  tags          Tag[]
 }
 
 model File {
-  id         Int    @id @default(autoincrement())
-  url        String
-  uploader   User   @relation(fields: [uploaderId], references: [id])
-  uploaderId Int
+  id           String   @id @default(uuid()) @db.Uuid
+  name         String
+  url          String   @unique //file location
+  owner        User     @relation(fields: [ownerId], references: [id])
+  ownerId      String   @db.Uuid
+  folder       Folder?  @relation(fields: [folderId], references: [id])
+  folderId     String?  @db.Uuid
+  creationDate DateTime @db.Timestamptz()
+  tags         Tag[]
+
+  @@index([ownerId])
+}
+
+model Folder {
+  id           String   @id @default(uuid()) @db.Uuid
+  name         String
+  url          String   @unique //folder location
+  owner        User     @relation(fields: [ownerId], references: [id])
+  ownerId      String   @db.Uuid
+  creationDate DateTime @db.Timestamptz()
+  files        File[]
+  tags         Tag[]
+
+  @@index([ownerId])
+}
+
+model Tag {
+  id      Int      @id @default(autoincrement())
+  name    String
+  owner   User     @relation(fields: [ownerId], references: [id])
+  ownerId String   @db.Uuid
+  files   File[]
+  folders Folder[]
 }

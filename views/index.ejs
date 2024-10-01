@@ -11,6 +11,8 @@
       <h1>CLOUD LAND</h1>
       <p>Login or register below so you can upload to the cloud.</p>
     </header>
+    <% if (errors) { %> <%- include('partials/errors', { errors: errors }) %> <%
+    } %>
     <div class="index-forms-container">
       <%- include('partials/login-form') %> <%-
       include('partials/register-form', {prefilledValues: sentValues}) %>
