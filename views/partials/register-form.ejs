@@ -1,28 +1,59 @@
 <form action="/" method="POST">
   <h2>Create an account</h2>
   <div class="input-container">
-    <input name="firstName" type="text" placeholder="First Name" />
-    <label for="firstName"></label>
+    <label for="firstName">
+      <input
+        id="firstName"
+        name="firstName"
+        type="text"
+        placeholder="First Name"
+        autocomplete="name"
+      />
+    </label>
   </div>
   <div class="input-container">
-    <input name="lastName" type="text" placeholder="Last Name" />
-    <label for="lastName"></label>
+    <label for="lastName">
+      <input
+        id="lastName"
+        name="lastName"
+        type="text"
+        placeholder="Last Name"
+        autocomplete="name"
+      />
+    </label>
   </div>
   <div class="input-container">
-    <input name="email" type="text" placeholder="Email" />
-    <label for="email"></label>
+    <label for="email">
+      <input
+        id="email"
+        name="email"
+        type="text"
+        placeholder="Email"
+        autocomplete="email"
+      />
+    </label>
   </div>
   <div class="input-container">
-    <input name="password" type="password" placeholder="Password" />
-    <label for="password"></label>
+    <label for="password">
+      <input
+        id="password"
+        name="password"
+        type="password"
+        placeholder="Password"
+        autocomplete="new-password"
+      />
+    </label>
   </div>
   <div class="input-container">
-    <input
-      name="confirm-password"
-      type="password"
-      placeholder="Confirm Password"
-    />
-    <label for="password"></label>
+    <label for="confirmPassword">
+      <input
+        id="confirmPassword"
+        name="confirmPassword"
+        type="password"
+        placeholder="Confirm Password"
+        autocomplete="new-password"
+      />
+    </label>
   </div>
   <button type="text">Submit</button>
 </form>

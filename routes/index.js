@@ -41,17 +41,22 @@ router.post(
       res.render("index", { errors: errors, sentValues: req.body });
       return;
     }
-    const hashPassword = genPassword(req.body.password);
-    const newUser = await prismaClient.user.create({
-      data: {
-        email: req.body.email,
-        password_hash: hashPassword,
-        first_name: req.body.firstName,
-        last_name: req.body.lastName,
-      },
-    });
-    console.log(`New user created! ${newUser}`);
-    res.render("index", { sentValues: req.body });
+    try {
+      const hashPassword = genPassword(req.body.password);
+      const newUser = await prismaClient.user.create({
+        data: {
+          email: req.body.email,
+          password_hash: hashPassword,
+          first_name: req.body.firstName,
+          last_name: req.body.lastName,
+        },
+      });
+      console.log(`New user created! ${newUser}`);
+      res.render("index", { sentValues: req.body });
+    } catch (error) {
+      console.log(error);
+      res.render("index", { errors: [error], sentValues: req.body });
+    }
   }
 );
 
