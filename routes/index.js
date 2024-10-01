@@ -4,6 +4,7 @@ import multer from "multer";
 import { genPassword } from "../lib/passwordUtils.js";
 import { body, validationResult } from "express-validator";
 import { nameValidationRules } from "../lib/nameValidators.js";
+import passport from "passport";
 
 export const router = express.Router();
 const upload = multer({ dest: "./uploads/" });
@@ -36,8 +37,7 @@ router.post(
   ],
   async (req, res, next) => {
     const errors = validationResult(req).array();
-    if (errors) {
-      //sends back filled form with errors
+    if (errors && errors.length > 0) {
       res.render("index", { errors: errors, sentValues: req.body });
       return;
     }
@@ -52,7 +52,7 @@ router.post(
         },
       });
       console.log(`New user created! ${newUser}`);
-      res.render("index", { sentValues: req.body });
+      res.render("index", { errors: null, sentValues: req.body });
     } catch (error) {
       console.log(error);
       res.render("index", { errors: [error], sentValues: req.body });
@@ -60,10 +60,23 @@ router.post(
   }
 );
 
-router.post("/login", async (req, res, next) => {});
+router.post(
+  "/login",
+  passport.authenticate("local", {
+    successRedirect: "/cloud",
+    failureRedirect: "/login-failure",
+  })
+);
 
-router.get("/upload", (req, res, next) => {
-  res.render("upload");
+router.get("/login-failure", (req, res, next) => {
+  res.render("index", {
+    errors: [{ msg: "Invalid username or password" }],
+    sentValues: null,
+  });
+});
+
+router.get("/cloud", (req, res, next) => {
+  res.render("cloud");
 });
 
 router.post("/upload", upload.single("file-upload"), (req, res, next) => {

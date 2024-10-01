@@ -1,19 +1,15 @@
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import { validPassword, genPassword } from "../lib/passwordUtils.js";
+import prisma from "../app.js";
 
 const verifyCallback = async (username, password, done) => {
   try {
-    // const result = await db.query(
-    //   "SELECT username, password_hash, id FROM users WHERE username = $1",
-    //   [username]
-    // );
-    const result = await prisma.user.findFirst({
+    const user = await prisma.user.findFirst({
       where: {
-        username: username,
+        email: username,
       },
     });
-    const user = result.rows[0];
 
     if (!user) {
       return done(null, false, { message: "Incorrect username or password." });
@@ -42,11 +38,7 @@ passport.serializeUser((user, done) => {
 
 passport.deserializeUser(async (userId, done) => {
   try {
-    // const result = await db.query(
-    //   "SELECT id, username, first_name, last_name, membership_status, admin_status FROM users WHERE id = $1",
-    //   [userId]
-    // );
-    const user = result.rows[0];
+    const user = result;
     done(null, user);
   } catch (err) {
     done(err);
