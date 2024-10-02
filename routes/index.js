@@ -89,8 +89,21 @@ router.get("/login-failure", (req, res, next) => {
   });
 });
 
+router.get("/logout", (req, res, next) => {
+  req.logout(function (err) {
+    if (err) {
+      return next(err);
+    }
+    res.redirect("/");
+  });
+});
+
 router.get("/cloud", (req, res, next) => {
-  res.render("cloud");
+  if (req.isAuthenticated()) {
+    res.render("cloud");
+  } else {
+    res.redirect("/");
+  }
 });
 
 router.post("/upload", upload.single("file-upload"), (req, res, next) => {
