@@ -13,7 +13,6 @@ dotenv.config();
 const app = express();
 
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
 // set up view engine
 const __filename = fileURLToPath(import.meta.url); // get the resolved path to the file

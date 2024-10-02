@@ -14,10 +14,10 @@ datasource db {
 }
 
 model Session {
-  id      String   @id
-  sid     String   @unique
-  data    String
-  expires DateTime
+  id        String   @id
+  sid       String   @unique
+  data      String
+  expiresAt DateTime
 }
 
 model User {
