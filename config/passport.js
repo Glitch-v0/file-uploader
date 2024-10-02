@@ -1,22 +1,31 @@
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
-import { validPassword, genPassword } from "../lib/passwordUtils.js";
+import { validPassword } from "../lib/passwordUtils.js";
 import prisma from "../app.js";
 
-const verifyCallback = async (username, password, done) => {
+export const verifyCallback = async (email, password, done) => {
+  console.log("Doing anything?");
   try {
     const user = await prisma.user.findFirst({
       where: {
-        email: username,
+        email: email,
       },
     });
 
+    console.log(`Found user?`);
+
+    console.log({ user });
+
     if (!user) {
+      console.log(`No such user`);
       return done(null, false, { message: "Incorrect username or password." });
     }
 
+    console.log(`Validating password: ${password} vs ${user.password_hash}`);
     const isValid = validPassword(password, user.password_hash);
     if (!isValid) {
+      console.log(`Invalid password`);
+      console.log({ isValid });
       return done(null, false, { message: "Incorrect username or password." });
     }
 
@@ -27,7 +36,7 @@ const verifyCallback = async (username, password, done) => {
 };
 
 const strategy = new LocalStrategy(
-  { usernameField: "username", passwordField: "password" },
+  { usernameField: "email", passwordField: "password" },
   verifyCallback
 );
 passport.use(strategy);

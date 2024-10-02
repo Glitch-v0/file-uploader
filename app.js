@@ -28,11 +28,11 @@ app.use(express.urlencoded({ extended: true }));
 const assetsPath = path.join(__dirname, "./public");
 app.use(express.static(assetsPath));
 
-let prismaClient = new PrismaClient();
+const prisma = new PrismaClient();
 // Session setup
 app.use(
   session({
-    store: new PrismaSessionStore(prismaClient, {
+    store: new PrismaSessionStore(prisma, {
       checkPeriod: 2 * 60 * 1000, //ms
       dbRecordIdIsSessionId: true,
       dbRecordIdFunction: undefined,
@@ -54,4 +54,4 @@ app.use(routes);
 
 app.listen(3000, () => console.log("Server running on port 3000"));
 
-export default prismaClient;
+export default prisma;

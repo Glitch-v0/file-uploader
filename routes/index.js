@@ -1,9 +1,11 @@
 import express from "express";
-import prismaClient from "../app.js";
+import prisma from "../app.js";
 import multer from "multer";
 import { genPassword } from "../lib/passwordUtils.js";
 import { body, validationResult } from "express-validator";
 import { nameValidationRules } from "../lib/nameValidators.js";
+import { verifyCallback } from "../config/passport.js"; // Adjust the path as necessary
+
 import passport from "passport";
 
 export const router = express.Router();
@@ -43,7 +45,7 @@ router.post(
     }
     try {
       const hashPassword = genPassword(req.body.password);
-      const newUser = await prismaClient.user.create({
+      const newUser = await prisma.user.create({
         data: {
           email: req.body.email,
           password_hash: hashPassword,
@@ -60,13 +62,25 @@ router.post(
   }
 );
 
-router.post(
-  "/login",
-  passport.authenticate("local", {
-    successRedirect: "/cloud",
-    failureRedirect: "/login-failure",
-  })
-);
+router.post("/login", async (req, res, next) => {
+  console.log("Login attempt:", req.body); // Check incoming login data
+
+  // Manually invoke your verifyCallback for testing
+  await verifyCallback(req.body.email, req.body.password, (err, user, info) => {
+    if (err) {
+      return next(err);
+    }
+    if (!user) {
+      return res.redirect("/login-failure");
+    }
+    req.logIn(user, (err) => {
+      if (err) {
+        return next(err);
+      }
+      return res.redirect("/cloud");
+    });
+  });
+});
 
 router.get("/login-failure", (req, res, next) => {
   res.render("index", {
