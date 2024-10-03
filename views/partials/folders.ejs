@@ -1,0 +1,10 @@
+<div>
+  <h2>Folders</h2>
+  <ul>
+    {% for folder in folders %}
+    <li>
+      <a href="/folder/{{ folder.id }}">{{ folder.name }}</a>
+    </li>
+    {% endfor %}
+  </ul>
+</div>

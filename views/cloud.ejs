@@ -8,7 +8,11 @@
   </head>
   <body>
     <%- include('partials/navbar', {links: ['upload', 'logout']}) %>
-    <h1>Here you can upload a single file at a time.</h1>
-    <%- include('partials/file-upload-form') %>
+    <h1>Upload</h1>
+    <%- include('partials/file-upload-form') %> <% if (folders &&
+    folders.length) { %> <%- include('partials/folders', {folders: folders})%>
+    <% } else { %>
+    <h2>No folders found</h2>
+    <% }%>
   </body>
 </html>

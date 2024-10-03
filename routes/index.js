@@ -100,7 +100,7 @@ router.get("/logout", (req, res, next) => {
 
 router.get("/cloud", (req, res, next) => {
   if (req.isAuthenticated()) {
-    res.render("cloud");
+    res.render("cloud", { folders: prisma.user.folders });
   } else {
     res.redirect("/");
   }
@@ -108,8 +108,8 @@ router.get("/cloud", (req, res, next) => {
 
 router.post("/upload", upload.single("file-upload"), (req, res, next) => {
   console.log(req.file);
-  res.render("index");
   console.log(`File saved to ${req.file.path}`);
+  res.redirect("/cloud");
 });
 
 router.get("*", (req, res, next) => {

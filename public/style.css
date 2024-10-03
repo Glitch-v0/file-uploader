@@ -1,9 +1,9 @@
 :root {
-  --background-color: #1f3c5c;
-  --extra-background-color: #314c6f;
+  --background-color: hsl(211, 50%, 24%);
+  --extra-background-color: hsl(214, 39%, 31%);
   --font-color: hsl(42, 59%, 94%);
-  --accent-color: #f4ebde;
-  --form-background-color: #6384a2;
+  --accent-color: hsl(35, 50%, 91%);
+  --form-background-color: hsl(209, 25%, 51%);
 }
 
 body {

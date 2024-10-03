@@ -55,6 +55,11 @@ model Folder {
   files        File[]
   tags         Tag[]
 
+  // Folder nesting
+  parentFolder   Folder?  @relation("FolderToFolder", fields: [parentFolderId], references: [id])
+  parentFolderId String?  @db.Uuid
+  childFolders   Folder[] @relation("FolderToFolder")
+
   @@index([ownerId])
 }
 
