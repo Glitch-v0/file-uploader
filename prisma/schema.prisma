@@ -26,6 +26,7 @@ model User {
   first_name    String
   last_name     String
   password_hash String
+  join_date     DateTime @default(now()) @db.Timestamptz()
   files         File[]
   folders       Folder[]
   tags          Tag[]
@@ -39,7 +40,7 @@ model File {
   ownerId      String   @db.Uuid
   folder       Folder?  @relation(fields: [folderId], references: [id])
   folderId     String?  @db.Uuid
-  creationDate DateTime @db.Timestamptz()
+  creationDate DateTime @default(now()) @db.Timestamptz()
   tags         Tag[]
 
   @@index([ownerId])
@@ -48,10 +49,9 @@ model File {
 model Folder {
   id           String   @id @default(uuid()) @db.Uuid
   name         String
-  url          String   @unique //folder location
   owner        User     @relation(fields: [ownerId], references: [id])
   ownerId      String   @db.Uuid
-  creationDate DateTime @db.Timestamptz()
+  creationDate DateTime @default(now()) @db.Timestamptz()
   files        File[]
   tags         Tag[]
 

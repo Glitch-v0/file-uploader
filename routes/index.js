@@ -98,12 +98,69 @@ router.get("/logout", (req, res, next) => {
   });
 });
 
-router.get("/cloud", (req, res, next) => {
+router.get("/cloud", async (req, res, next) => {
   if (req.isAuthenticated()) {
-    res.render("cloud", { folders: prisma.user.folders });
+    res.render("cloud", { folders: null, currentFolder: null });
   } else {
     res.redirect("/");
   }
+});
+router.get("/cloud/:folderId", async (req, res, next) => {
+  if (req.isAuthenticated()) {
+    const inFolder = req.params.folderId;
+    if (inFolder !== undefined && inFolder !== null) {
+      console.log(`Searching prisma for folder id... ${inFolder}`);
+      const currentFolder = await prisma.folder.findUnique({
+        where: {
+          id: inFolder,
+        },
+        include: {
+          childFolders: true,
+        },
+      });
+      res.render("cloud", {
+        folders: currentFolder.childFolders,
+        currentFolder: currentFolder.name,
+      });
+    } else {
+      res.render("cloud", { folders: null, currentFolder: null });
+    }
+  } else {
+    res.redirect("/");
+  }
+});
+
+router.post("/cloud/:folderId?", async (req, res, next) => {
+  const folderTags = req.body.tags.split(",").map((tag) => tag.trim());
+  const newFolder = await prisma.user.update({
+    where: {
+      id: req.user.id,
+    },
+    data: {
+      folders: {
+        create: {
+          name: req.body.name,
+          parentFolderId: req.params.folderId || null,
+          owner: {
+            connect: {
+              id: req.user.id,
+            },
+          },
+          tags: {
+            create: folderTags.map((tag) => ({
+              name: tag,
+              owner: {
+                connect: {
+                  id: req.user.id,
+                },
+              },
+            })),
+          },
+        },
+      },
+    },
+  });
+  req.redirect(`/cloud/${newFolder.id}`);
 });
 
 router.post("/upload", upload.single("file-upload"), (req, res, next) => {

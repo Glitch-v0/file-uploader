@@ -4,15 +4,18 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Cloud</title>
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="/style.css" />
   </head>
   <body>
-    <%- include('partials/navbar', {links: ['upload', 'logout']}) %>
+    <%- include('partials/navbar', {links: ['upload', 'logout']}) %> <% if
+    (currentFolder) { %>
+    <h1>Viewing folder "<%= currentFolder %>"s content</h1>
+
     <h1>Upload</h1>
-    <%- include('partials/file-upload-form') %> <% if (folders &&
+    <%- include('partials/file-upload-form') %> <% } %> <% if (folders &&
     folders.length) { %> <%- include('partials/folders', {folders: folders})%>
     <% } else { %>
     <h2>No folders found</h2>
-    <% }%>
+    <%- include('partials/create-folder') %> <% }%>
   </body>
 </html>

@@ -76,6 +76,13 @@ input {
   text-align: center;
 }
 
+button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
 form button {
   background-color: var(--accent-color);
   border-radius: 12px;
@@ -92,6 +99,11 @@ form button {
 .error-message {
   color: #f55;
   list-style: none;
+}
+
+.folder {
+  width: 4rem;
+  place-self: center;
 }
 @media screen and (max-width: 800px) {
   .index-forms-container {
