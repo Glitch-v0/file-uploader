@@ -53,10 +53,12 @@ form h2 {
 h1 {
   font-size: 2.5rem;
   letter-spacing: 2px;
+  margin: 0.5rem;
 }
 
 h2 {
   font-size: 2rem;
+  margin: 1rem;
 }
 
 input {
@@ -131,4 +133,47 @@ nav ul {
 nav a {
   text-decoration: none;
   color: var(--font-color);
+}
+
+.folder-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px; /* Space between cards */
+  justify-content: center; /* Center align cards */
+}
+
+.folder-card {
+  background-color: #f9f9f9; /* Card background color */
+  border: 1px solid #ddd; /* Card border */
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  padding: 15px; /* Inner padding */
+  text-align: center; /* Center text */
+  width: 150px; /* Fixed width for uniformity */
+  transition: transform 0.2s; /* Animation on hover */
+}
+
+.folder-card:hover {
+  transform: scale(1.05); /* Slightly enlarge on hover */
+}
+
+.folder-icon {
+  width: 48px; /* Icon size */
+  height: 48px; /* Icon size */
+}
+
+.folder-name {
+  margin-top: 10px; /* Space between icon and name */
+  font-size: 16px; /* Font size */
+  color: #333; /* Text color */
+  text-decoration: none; /* Remove underline */
+}
+
+.folder-name a {
+  color: inherit; /* Inherit color from parent */
+  text-decoration: none; /* Remove underline */
+}
+
+.folder-name a:hover {
+  text-decoration: underline; /* Underline on hover */
 }

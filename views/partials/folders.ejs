@@ -1,10 +1,13 @@
 <div>
   <h2>Folders</h2>
-  <ul>
+  <div class="folder-container">
     <% folders.forEach(folder => { %>
-    <li>
-      <a href="/cloud/<%= folder.id %>"><%= folder.name %></a>
-    </li>
+    <div class="folder-card">
+      <img class="folder-icon" src="/icons/folder.svg" alt="folder" />
+      <h3 class="folder-name">
+        <a href="/cloud/<%= folder.id %>"><%= folder.name %></a>
+      </h3>
+    </div>
     <% }) %>
-  </ul>
+  </div>
 </div>

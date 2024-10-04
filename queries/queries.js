@@ -9,12 +9,12 @@ export const tagQueries = {
       },
     });
   },
-  createTags: (tags, userId) => {
-    prisma.tag.createMany({
-      data: tags.map((tag) => ({
+  createTag: (tag, userId) => {
+    return prisma.tag.create({
+      data: {
         name: tag,
         ownerId: userId,
-      })),
+      },
     });
   },
   connectTagsToFolder: (tags, userId, folderId) => {

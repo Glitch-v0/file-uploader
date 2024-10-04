@@ -103,12 +103,13 @@ router.get("/logout", (req, res, next) => {
 
 router.get("/cloud", isAuthenticated, async (req, res, next) => {
   const currentFolders = await folderQueries.getOrphanFolders();
-  console.log({ currentFolders });
+  // console.log({ currentFolders });
   res.render("cloud", {
     errors: null,
     folders: currentFolders,
     currentFolder: null,
     currentURL: req.originalUrl,
+    previousFolder: null,
   });
 });
 
@@ -127,6 +128,7 @@ router.get(
       folders: childFolders,
       currentFolder: parentFolder.name,
       currentURL: req.originalUrl,
+      previousFolder: parentFolder.parentFolderId,
     });
   })
 );
@@ -156,18 +158,14 @@ router.post(
     const folderTags = req.body.tags.split(",").map((tag) => tag.trim());
 
     // Check each tag before creating DB entry
-    let tagsToCreate = [];
-    folderTags.forEach((tag) => {
-      const tagExists = tagQueries.checkIfTagExists(tag, req.user.id);
+    folderTags.forEach(async (tag) => {
+      const tagExists = await tagQueries.checkIfTagExists(tag, req.user.id);
       if (!tagExists) {
-        tagsToCreate.push(tag);
+        console.log(`Tag ${tag} doesn't exist. Creating...`);
+        const createdTag = await tagQueries.createTag(tag, req.user.id);
+        console.log({ createdTag });
       }
     });
-
-    // Create tags in DB
-    if (tagsToCreate.length > 0) {
-      tagQueries.createTags(tagsToCreate, req.user.id);
-    }
 
     // Connect tags to folder
     tagQueries.connectTagsToFolder(folderTags, req.user.id, newFolder.id);
@@ -189,7 +187,9 @@ router.post(
 
 router.use((err, req, res, next) => {
   console.error(err.stack); // Log the error stack for debugging
-  res.status(500).render("error", { errors: [err] || "Internal Server Error" });
+  res
+    .status(500)
+    .render("error", { errors: [err.message] || "Internal Server Error" });
 });
 
 router.get("*", (req, res, next) => {
