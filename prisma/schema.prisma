@@ -70,4 +70,6 @@ model Tag {
   ownerId String   @db.Uuid
   files   File[]
   folders Folder[]
+
+  @@unique([ownerId, name])
 }

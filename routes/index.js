@@ -3,8 +3,11 @@ import prisma from "../app.js";
 import multer from "multer";
 import { genPassword } from "../lib/passwordUtils.js";
 import { body, validationResult } from "express-validator";
+import tryCatch from "express-async-handler";
 import { nameValidationRules } from "../lib/nameValidators.js";
 import { verifyCallback } from "../config/passport.js"; // Adjust the path as necessary
+import { isAuthenticated } from "../middleware/authRoute.js";
+import { tagQueries, folderQueries } from "../queries/queries.js";
 
 import passport from "passport";
 
@@ -98,75 +101,95 @@ router.get("/logout", (req, res, next) => {
   });
 });
 
-router.get("/cloud", async (req, res, next) => {
-  if (req.isAuthenticated()) {
-    res.render("cloud", { folders: null, currentFolder: null });
-  } else {
-    res.redirect("/");
-  }
-});
-router.get("/cloud/:folderId", async (req, res, next) => {
-  if (req.isAuthenticated()) {
-    const inFolder = req.params.folderId;
-    if (inFolder !== undefined && inFolder !== null) {
-      console.log(`Searching prisma for folder id... ${inFolder}`);
-      const currentFolder = await prisma.folder.findUnique({
-        where: {
-          id: inFolder,
-        },
-        include: {
-          childFolders: true,
-        },
-      });
-      res.render("cloud", {
-        folders: currentFolder.childFolders,
-        currentFolder: currentFolder.name,
-      });
-    } else {
-      res.render("cloud", { folders: null, currentFolder: null });
-    }
-  } else {
-    res.redirect("/");
-  }
-});
-
-router.post("/cloud/:folderId?", async (req, res, next) => {
-  const folderTags = req.body.tags.split(",").map((tag) => tag.trim());
-  const newFolder = await prisma.user.update({
-    where: {
-      id: req.user.id,
-    },
-    data: {
-      folders: {
-        create: {
-          name: req.body.name,
-          parentFolderId: req.params.folderId || null,
-          owner: {
-            connect: {
-              id: req.user.id,
-            },
-          },
-          tags: {
-            create: folderTags.map((tag) => ({
-              name: tag,
-              owner: {
-                connect: {
-                  id: req.user.id,
-                },
-              },
-            })),
-          },
-        },
-      },
-    },
+router.get("/cloud", isAuthenticated, async (req, res, next) => {
+  const currentFolders = await folderQueries.getOrphanFolders();
+  console.log({ currentFolders });
+  res.render("cloud", {
+    errors: null,
+    folders: currentFolders,
+    currentFolder: null,
+    currentURL: req.originalUrl,
   });
-  req.redirect(`/cloud/${newFolder.id}`);
 });
 
-router.post("/upload", upload.single("file-upload"), (req, res, next) => {
-  console.log(req.file);
-  console.log(`File saved to ${req.file.path}`);
-  res.redirect("/cloud");
+router.get(
+  "/cloud/:folderId",
+  isAuthenticated,
+  tryCatch(async (req, res, next) => {
+    const folderParameter = req.params.folderId;
+    const parentFolder = await folderQueries.getFolder(folderParameter);
+    if (!parentFolder) {
+      res.redirect("/cloud");
+    }
+    const childFolders = await folderQueries.getFolderChildren(parentFolder.id);
+    res.render("cloud", {
+      errors: null,
+      folders: childFolders,
+      currentFolder: parentFolder.name,
+      currentURL: req.originalUrl,
+    });
+  })
+);
+
+router.post(
+  "/cloud/:folderId?",
+  isAuthenticated,
+  tryCatch(async (req, res, next) => {
+    // Create new folder
+    const currentParentFolder = req.params.folderId;
+    const newFolder = await folderQueries.createFolder(
+      req.body.name,
+      req.user.id
+    );
+    if (currentParentFolder) {
+      console.log(
+        `Assigning parent folder ${currentParentFolder} to ${newFolder.id}`
+      );
+      const test = await folderQueries.assignParentToFolder(
+        newFolder.id,
+        currentParentFolder
+      );
+      console.log(test);
+    }
+
+    // Tags
+    const folderTags = req.body.tags.split(",").map((tag) => tag.trim());
+
+    // Check each tag before creating DB entry
+    let tagsToCreate = [];
+    folderTags.forEach((tag) => {
+      const tagExists = tagQueries.checkIfTagExists(tag, req.user.id);
+      if (!tagExists) {
+        tagsToCreate.push(tag);
+      }
+    });
+
+    // Create tags in DB
+    if (tagsToCreate.length > 0) {
+      tagQueries.createTags(tagsToCreate, req.user.id);
+    }
+
+    // Connect tags to folder
+    tagQueries.connectTagsToFolder(folderTags, req.user.id, newFolder.id);
+    // console.log({ currentParentFolder, newFolder });
+    res.redirect(`/cloud/${newFolder.id}`);
+  })
+);
+
+router.post(
+  "/upload",
+  isAuthenticated,
+  upload.single("file-upload"),
+  (req, res, next) => {
+    console.log(req.file);
+    console.log(`File saved to ${req.file.path}`);
+    res.redirect("/cloud");
+  }
+);
+
+router.use((err, req, res, next) => {
+  console.error(err.stack); // Log the error stack for debugging
+  res.status(500).render("error", { errors: [err] || "Internal Server Error" });
 });
 
 router.get("*", (req, res, next) => {

@@ -7,8 +7,9 @@
     <link rel="stylesheet" href="/style.css" />
   </head>
   <body>
-    <%- include('partials/navbar', {links: ['upload', 'logout']}) %> <% if
-    (currentFolder) { %>
+    <%- include('partials/navbar', {links: ['cloud', 'logout']}) %> <% if
+    (errors) { %> <%- include('partials/errors', { errors: errors }) %> <% } %>
+    <% if (currentFolder) { %>
     <h1>Viewing folder "<%= currentFolder %>"s content</h1>
 
     <h1>Upload</h1>
@@ -16,6 +17,6 @@
     folders.length) { %> <%- include('partials/folders', {folders: folders})%>
     <% } else { %>
     <h2>No folders found</h2>
-    <%- include('partials/create-folder') %> <% }%>
+    <% }%> <%- include('partials/create-folder', {submissionURL: currentURL}) %>
   </body>
 </html>
