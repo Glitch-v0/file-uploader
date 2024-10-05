@@ -7,18 +7,30 @@
     <link rel="stylesheet" href="/style.css" />
   </head>
   <body>
-    <%- include('partials/navbar', {links: ['cloud', 'logout']}) %> <% if
-    (errors) { %> <%- include('partials/errors', { errors: errors }) %> <% } %>
-    <% if (currentFolder) { %>
-    <h1>Viewing folder "<%= currentFolder %>"</h1>
-    <% } %> <% if (folders && folders.length) { %> <%-
-    include('partials/folders', {folders: folders, previousURL: previousFolder})
-    %> <% } else { %>
-    <h2>No folders found</h2>
-    <% } %> <% if (previousFolder !== null) { %> <%-
-    include('partials/previous-folder', {previousURL: previousFolder}) %> <% }
-    %> <%- include('partials/create-folder', {submissionURL: currentURL}) %>
-    <h1>Upload File</h1>
-    <%- include('partials/file-upload-form') %>
+    <body>
+      <%- include('partials/navbar', {links: ['cloud', 'logout']}) %> 
+      <% if (errors) { %> 
+        <%- include('partials/errors', { errors: errors }) %> 
+      <% } %>
+    
+      <% if (currentFolder) { %>
+        <h1>Viewing folder "<%= currentFolder %>"</h1>
+      <% } %>
+    
+      <% if (folders && folders.length) { %> 
+        <%- include('partials/folders', {folders: folders, previousURL: previousFolder}) %> 
+      <% } else { %>
+        <h2>No folders found</h2>
+      <% } %>
+
+      <% if (previousFolder) { %>
+        <%- include('partials/previous-folder', {previousURL: previousFolder}) %> 
+      <% } %>
+    
+      <%- include('partials/create-folder', {submissionURL: currentURL}) %>
+      <h1>Upload File</h1>
+      <%- include('partials/file-upload-form') %>
+    </body>
+    
   </body>
 </html>

@@ -62,7 +62,7 @@ router.post(
       console.log(error);
       res.render("index", { errors: [error], sentValues: req.body });
     }
-  }
+  },
 );
 
 router.post("/login", async (req, res, next) => {
@@ -123,14 +123,15 @@ router.get(
       res.redirect("/cloud");
     }
     const childFolders = await folderQueries.getFolderChildren(parentFolder.id);
+    const previousFolder = parentFolder.parentFolderId;
     res.render("cloud", {
       errors: null,
       folders: childFolders,
       currentFolder: parentFolder.name,
       currentURL: req.originalUrl,
-      previousFolder: parentFolder.parentFolderId,
+      previousFolder: previousFolder ? previousFolder : " ",
     });
-  })
+  }),
 );
 
 router.post(
@@ -141,37 +142,46 @@ router.post(
     const currentParentFolder = req.params.folderId;
     const newFolder = await folderQueries.createFolder(
       req.body.name,
-      req.user.id
+      req.user.id,
     );
     if (currentParentFolder) {
       console.log(
-        `Assigning parent folder ${currentParentFolder} to ${newFolder.id}`
+        `Assigning parent folder ${currentParentFolder} to ${newFolder.id}`,
       );
-      const test = await folderQueries.assignParentToFolder(
+      await folderQueries.assignParentToFolder(
         newFolder.id,
-        currentParentFolder
+        currentParentFolder,
       );
-      console.log(test);
     }
 
     // Tags
     const folderTags = req.body.tags.split(",").map((tag) => tag.trim());
+    console.log({ folderTags });
+    if (folderTags == [""]) {
+      res.redirect(`/cloud/${newFolder.id}`);
+    }
 
     // Check each tag before creating DB entry
-    folderTags.forEach(async (tag) => {
+    for (const tag of folderTags) {
       const tagExists = await tagQueries.checkIfTagExists(tag, req.user.id);
       if (!tagExists) {
-        console.log(`Tag ${tag} doesn't exist. Creating...`);
         const createdTag = await tagQueries.createTag(tag, req.user.id);
-        console.log({ createdTag });
       }
-    });
+    }
+    console.log(
+      `Connecting tags ${folderTags} to folder ${newFolder.id}, and user ${req.user.id}`,
+    );
 
     // Connect tags to folder
-    tagQueries.connectTagsToFolder(folderTags, req.user.id, newFolder.id);
+    await Promise.all(
+      folderTags.map(async (tag) =>
+        tagQueries.connectTagToFolder(tag, req.user.id, newFolder.id),
+      ),
+    );
+    console.log({ connectedTags });
     // console.log({ currentParentFolder, newFolder });
     res.redirect(`/cloud/${newFolder.id}`);
-  })
+  }),
 );
 
 router.post(
@@ -182,14 +192,14 @@ router.post(
     console.log(req.file);
     console.log(`File saved to ${req.file.path}`);
     res.redirect("/cloud");
-  }
+  },
 );
 
 router.use((err, req, res, next) => {
   console.error(err.stack); // Log the error stack for debugging
-  res
-    .status(500)
-    .render("error", { errors: [err.message] || "Internal Server Error" });
+  res.status(500).render("error", {
+    errors: [{ msg: err }] || "Internal Server Error",
+  });
 });
 
 router.get("*", (req, res, next) => {

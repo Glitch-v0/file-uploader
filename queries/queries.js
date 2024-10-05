@@ -17,13 +17,11 @@ export const tagQueries = {
       },
     });
   },
-  connectTagsToFolder: (tags, userId, folderId) => {
-    prisma.tag.updateMany({
+  connectTagToFolder: (tagName, userId, folderId) => {
+    prisma.tag.update({
       where: {
         ownerId: userId,
-        name: {
-          in: tags,
-        },
+        name: tagName,
       },
       data: {
         folders: {
@@ -50,6 +48,17 @@ export const folderQueries = {
     return prisma.folder.findUnique({
       where: {
         id: folderId,
+      },
+    });
+  },
+
+  getParentFolder: (folderId) => {
+    return prisma.folder.findFirst({
+      where: {
+        id: folderId,
+      },
+      select: {
+        parentFolderId: true,
       },
     });
   },

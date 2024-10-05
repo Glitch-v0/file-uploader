@@ -49,15 +49,15 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use((req, res, next) => {
-  console.log(
-    `\n[${new Date().toISOString()}] ${req.method} ${req.originalUrl}`
-  );
-  // console.log("Params:", req.params);
-  // console.log("Query:", req.query);
-  // console.log("Body:", req.body);
-  next();
-});
+// app.use((req, res, next) => {
+//   console.log(
+//     `\n[${new Date().toISOString()}] ${req.method} ${req.originalUrl}`
+//   );
+//   // console.log("Params:", req.params);
+//   // console.log("Query:", req.query);
+//   // console.log("Body:", req.body);
+//   next();
+// });
 app.use(routes);
 
 app.listen(3000, () => console.log("Server running on port 3000"));
