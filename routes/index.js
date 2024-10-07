@@ -106,6 +106,7 @@ router.get("/cloud", isAuthenticated, async (req, res, next) => {
   // console.log({ currentFolders });
   res.render("cloud", {
     errors: null,
+    files: null,
     folders: currentFolders,
     currentFolder: null,
     currentURL: req.originalUrl,
@@ -126,6 +127,7 @@ router.get(
     const previousFolder = parentFolder.parentFolderId;
     res.render("cloud", {
       errors: null,
+      files: null,
       folders: childFolders,
       currentFolder: parentFolder.name,
       currentURL: req.originalUrl,
@@ -159,6 +161,7 @@ router.post(
     console.log({ folderTags });
     if (folderTags == [""]) {
       res.redirect(`/cloud/${newFolder.id}`);
+      return;
     }
 
     // Check each tag before creating DB entry
@@ -174,12 +177,10 @@ router.post(
 
     // Connect tags to folder
     await Promise.all(
-      folderTags.map(async (tag) =>
+      folderTags.map((tag) =>
         tagQueries.connectTagToFolder(tag, req.user.id, newFolder.id),
       ),
     );
-    console.log({ connectedTags });
-    // console.log({ currentParentFolder, newFolder });
     res.redirect(`/cloud/${newFolder.id}`);
   }),
 );

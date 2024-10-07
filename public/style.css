@@ -107,11 +107,6 @@ form button {
   width: 4rem;
   place-self: center;
 }
-@media screen and (max-width: 800px) {
-  .index-forms-container {
-    flex-direction: column;
-  }
-}
 
 nav {
   width: 100%;
@@ -135,16 +130,21 @@ nav a {
   color: var(--font-color);
 }
 
+.creation-container {
+  display: flex;
+  gap: 2rem;
+}
+
 .folder-container {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px; /* Space between cards */
+  gap: 1rem; /* Space between cards */
   justify-content: center; /* Center align cards */
 }
 
 .folder-card {
-  background-color: #f9f9f9; /* Card background color */
-  border: 1px solid #ddd; /* Card border */
+  background-color: var(--form-background-color); /* Card background color */
+  border: 2px solid var(--extra-background-color); /* Card border */
   border-radius: 8px; /* Rounded corners */
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
   padding: 15px; /* Inner padding */
@@ -165,7 +165,7 @@ nav a {
 .folder-name {
   margin-top: 10px; /* Space between icon and name */
   font-size: 16px; /* Font size */
-  color: #333; /* Text color */
+  color: var(--font-color); /* Text color */
   text-decoration: none; /* Remove underline */
 }
 
@@ -176,4 +176,14 @@ nav a {
 
 .folder-name a:hover {
   text-decoration: underline; /* Underline on hover */
+}
+
+@media screen and (max-width: 800px) {
+  .index-forms-container {
+    flex-direction: column;
+  }
+
+  .creation-container {
+    flex-direction: column;
+  }
 }

@@ -23,13 +23,20 @@
         <h2>No folders found</h2>
       <% } %>
 
+      <% if (files && files.length) { %> 
+        <%- include('partials/files', {files: files, previousURL: previousFolder}) %> 
+      <% } else { %>
+        <h2>No files found</h2>
+      <% } %>
+
       <% if (previousFolder) { %>
         <%- include('partials/previous-folder', {previousURL: previousFolder}) %> 
       <% } %>
-    
-      <%- include('partials/create-folder', {submissionURL: currentURL}) %>
-      <h1>Upload File</h1>
-      <%- include('partials/file-upload-form') %>
+
+      <div class="creation-container">
+        <%- include('partials/create-folder', {submissionURL: currentURL}) %>
+        <%- include('partials/file-upload-form') %>
+      </div>
     </body>
     
   </body>

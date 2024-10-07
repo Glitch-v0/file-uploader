@@ -2,7 +2,7 @@ import prisma from "../app.js";
 
 export const tagQueries = {
   checkIfTagExists: (tagName, userId) => {
-    return prisma.tag.findUnique({
+    return prisma.tag.findFirst({
       where: {
         name: tagName,
         ownerId: userId,
@@ -17,11 +17,13 @@ export const tagQueries = {
       },
     });
   },
-  connectTagToFolder: (tagName, userId, folderId) => {
-    prisma.tag.update({
+  connectTagToFolder: async (tagName, userId, folderId) => {
+    return prisma.tag.update({
       where: {
-        ownerId: userId,
-        name: tagName,
+        ownerId_name: {
+          ownerId: userId,
+          name: tagName,
+        },
       },
       data: {
         folders: {
