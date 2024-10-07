@@ -51,9 +51,9 @@ router.post(
       const newUser = await prisma.user.create({
         data: {
           email: req.body.email,
-          password_hash: hashPassword,
-          first_name: req.body.firstName,
-          last_name: req.body.lastName,
+          passwordHash: hashPassword,
+          firstName: req.body.firstName,
+          lastName: req.body.lastName,
         },
       });
       console.log(`New user created! ${newUser}`);

@@ -21,8 +21,8 @@ export const verifyCallback = async (email, password, done) => {
       return done(null, false, { message: "Incorrect username or password." });
     }
 
-    console.log(`Validating password: ${password} vs ${user.password_hash}`);
-    const isValid = validPassword(password, user.password_hash);
+    console.log(`Validating password: ${password} vs ${user.passwordHash}`);
+    const isValid = validPassword(password, user.passwordHash);
     if (!isValid) {
       console.log(`Invalid password`);
       console.log({ isValid });
@@ -37,7 +37,7 @@ export const verifyCallback = async (email, password, done) => {
 
 const strategy = new LocalStrategy(
   { usernameField: "email", passwordField: "password" },
-  verifyCallback
+  verifyCallback,
 );
 passport.use(strategy);
 

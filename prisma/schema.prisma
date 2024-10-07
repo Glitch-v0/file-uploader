@@ -21,27 +21,30 @@ model Session {
 }
 
 model User {
-  id            String   @id @default(uuid()) @db.Uuid
-  email         String   @unique
-  first_name    String
-  last_name     String
-  password_hash String
-  join_date     DateTime @default(now()) @db.Timestamptz()
-  files         File[]
-  folders       Folder[]
-  tags          Tag[]
+  id           String   @id @default(uuid()) @db.Uuid
+  email        String   @unique
+  firstName    String?
+  lastName     String?
+  passwordHash String?
+  joinDate     DateTime @default(now()) @db.Timestamptz()
+  files        File[]
+  folders      Folder[]
+  tags         Tag[]
 }
 
 model File {
-  id           String   @id @default(uuid()) @db.Uuid
-  name         String
-  url          String   @unique //file location
-  owner        User     @relation(fields: [ownerId], references: [id])
-  ownerId      String   @db.Uuid
-  folder       Folder?  @relation(fields: [folderId], references: [id])
-  folderId     String?  @db.Uuid
-  creationDate DateTime @default(now()) @db.Timestamptz()
-  tags         Tag[]
+  id         String   @id @default(uuid()) @db.Uuid
+  name       String
+  url        String   @unique //file location
+  owner      User     @relation(fields: [ownerId], references: [id])
+  ownerId    String   @db.Uuid
+  folder     Folder?  @relation(fields: [folderId], references: [id])
+  folderId   String?  @db.Uuid
+  uploadDate DateTime @default(now()) @db.Timestamptz()
+  size       Int
+  type       String
+
+  tags Tag[]
 
   @@index([ownerId])
 }
