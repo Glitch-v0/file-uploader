@@ -187,6 +187,7 @@ router.post(
   }),
 );
 
+// File upload
 router.post(
   "/cloud/:folderId?/upload",
   isAuthenticated,
@@ -208,6 +209,26 @@ router.post(
     const dbUpload = await fileQueries.createFile(fileInfo);
     console.log({ dbUpload });
     res.redirect("/cloud");
+  },
+);
+
+//File Viewing
+router.get(
+  "/file/:folderId?/:fileId",
+  isAuthenticated,
+  async (req, res, next) => {
+    const fileId = req.params.fileId;
+    const file = await fileQueries.getFileById(fileId);
+    if (!file) {
+      res.redirect("/cloud");
+    }
+    const parentFolder = await fileQueries.getParentFolder(fileId);
+    console.log(parentFolder.folderId);
+    res.render("file-details", {
+      errors: null,
+      file: file,
+      previousFolder: parentFolder?.folderId || "",
+    });
   },
 );
 

@@ -112,6 +112,25 @@ export const fileQueries = {
     });
   },
 
+  getFileById: (fileId) => {
+    return prisma.file.findUnique({
+      where: {
+        id: fileId,
+      },
+    });
+  },
+
+  getParentFolder: (fileId) => {
+    return prisma.file.findFirst({
+      where: {
+        id: fileId,
+      },
+      select: {
+        folderId: true,
+      },
+    });
+  },
+
   createFile: (file) => {
     return prisma.file.create({
       data: {
