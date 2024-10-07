@@ -7,7 +7,7 @@ import tryCatch from "express-async-handler";
 import { nameValidationRules } from "../lib/nameValidators.js";
 import { verifyCallback } from "../config/passport.js"; // Adjust the path as necessary
 import { isAuthenticated } from "../middleware/authRoute.js";
-import { tagQueries, folderQueries } from "../queries/queries.js";
+import { tagQueries, folderQueries, fileQueries } from "../queries/queries.js";
 
 import passport from "passport";
 
@@ -103,10 +103,11 @@ router.get("/logout", (req, res, next) => {
 
 router.get("/cloud", isAuthenticated, async (req, res, next) => {
   const currentFolders = await folderQueries.getOrphanFolders();
+  const currentFiles = await fileQueries.getOrphanFiles();
   // console.log({ currentFolders });
   res.render("cloud", {
     errors: null,
-    files: null,
+    files: currentFiles,
     folders: currentFolders,
     currentFolder: null,
     currentURL: req.originalUrl,
@@ -124,10 +125,11 @@ router.get(
       res.redirect("/cloud");
     }
     const childFolders = await folderQueries.getFolderChildren(parentFolder.id);
+    const childFiles = await fileQueries.getFilesByFolder(parentFolder.id);
     const previousFolder = parentFolder.parentFolderId;
     res.render("cloud", {
       errors: null,
-      files: null,
+      files: childFiles,
       folders: childFolders,
       currentFolder: parentFolder.name,
       currentURL: req.originalUrl,
@@ -186,12 +188,25 @@ router.post(
 );
 
 router.post(
-  "/upload",
+  "/cloud/:folderId?/upload",
   isAuthenticated,
   upload.single("file-upload"),
-  (req, res, next) => {
-    console.log(req.file);
-    console.log(`File saved to ${req.file.path}`);
+  async (req, res, next) => {
+    // console.log(req.file);
+    // console.log(`File saved to ${req.file.path}`);
+    const fileTags = req.body.tags.split(",").map((tag) => tag.trim());
+    const fileInfo = {
+      name: req.file.originalname,
+      url: req.file.path,
+      folderId: req.params.folderId ? req.params.folderId : null,
+      ownerId: req.user.id,
+      tags: fileTags ? fileTags : null,
+      size: req.file.size,
+      type: req.file.mimetype,
+    };
+    console.log({ fileInfo });
+    const dbUpload = await fileQueries.createFile(fileInfo);
+    console.log({ dbUpload });
     res.redirect("/cloud");
   },
 );

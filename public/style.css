@@ -69,12 +69,12 @@ input {
   color: var(--font-color);
   font-size: 1.25rem;
   width: 100%;
-  text-align: center;
+  text-align: start;
+  place-self: center;
 }
 
 ::placeholder {
   color: var(--font-color);
-  font-family: sans-serif;
   text-align: center;
 }
 
@@ -101,11 +101,6 @@ form button {
 .error-message {
   color: #f55;
   list-style: none;
-}
-
-.folder {
-  width: 4rem;
-  place-self: center;
 }
 
 nav {
@@ -157,9 +152,10 @@ nav a {
   transform: scale(1.05); /* Slightly enlarge on hover */
 }
 
-.folder-icon {
-  width: 48px; /* Icon size */
-  height: 48px; /* Icon size */
+.icon {
+  width: 48px;
+  height: 48px;
+  place-self: center;
 }
 
 .folder-name {

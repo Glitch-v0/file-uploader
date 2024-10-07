@@ -1,5 +1,6 @@
-<form action="/upload" method="post" enctype="multipart/form-data">
-  <img class="folder" src="/icons/file-plus.svg" alt="file" />
+<form action="<%= submissionURL %>/upload" method="post" enctype="multipart/form-data">
+  <img class="icon" src="/icons/file-plus.svg" alt="file" />
   <input type="file" name="file-upload" required/>
+  <input type="text" name="tags" placeholder="tagA, tagB, tagC" />
   <button>Upload File</button>
 </form>

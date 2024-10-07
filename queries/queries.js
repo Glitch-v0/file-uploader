@@ -93,3 +93,61 @@ export const folderQueries = {
     });
   },
 };
+
+export const fileQueries = {
+  getOrphanFiles: (userId) => {
+    return prisma.file.findMany({
+      where: {
+        ownerId: userId,
+        folderId: null,
+      },
+    });
+  },
+
+  getFilesByFolder: (folderId) => {
+    return prisma.file.findMany({
+      where: {
+        folderId: folderId,
+      },
+    });
+  },
+
+  createFile: (file) => {
+    return prisma.file.create({
+      data: {
+        name: file.name,
+        url: file.url,
+        folderId: file.folderId,
+        ownerId: file.ownerId,
+        tags: file.tags,
+        size: file.size,
+        type: file.type,
+        tags: {
+          connectOrCreate: file.tags.map((tag) => ({
+            where: {
+              ownerId_name: {
+                name: tag,
+                ownerId: file.ownerId,
+              },
+            },
+            create: {
+              name: tag,
+              ownerId: file.ownerId,
+            },
+          })),
+        },
+      },
+    });
+  },
+
+  getFileDownloadLink: (fileId) => {
+    return prisma.file.findUnique({
+      where: {
+        id: fileId,
+      },
+      select: {
+        url: true,
+      },
+    });
+  },
+};
