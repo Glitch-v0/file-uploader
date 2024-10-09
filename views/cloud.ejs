@@ -14,19 +14,19 @@
       <% } %>
     
       <% if (currentFolder) { %>
-        <h1>Viewing folder "<%= currentFolder %>"</h1>
+        <h1>Viewing "<%= currentFolder %>"</h1>
       <% } %>
     
       <% if (folders && folders.length) { %> 
         <%- include('partials/folders', {folders: folders, previousURL: previousFolder}) %> 
       <% } else { %>
-        <h2>No folders found</h2>
+        <h2>(No folders here)</h2>
       <% } %>
 
       <% if (files && files.length) { %> 
         <%- include('partials/files', {files: files, previousURL: previousFolder}) %> 
       <% } else { %>
-        <h2>No files found</h2>
+        <h2>(No files here)</h2>
       <% } %>
 
       <% if (previousFolder) { %>

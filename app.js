@@ -2,8 +2,9 @@ import express from "express";
 import session from "express-session";
 import { PrismaSessionStore } from "@quixo3/prisma-session-store";
 import { PrismaClient } from "@prisma/client";
+import { createClient } from "@supabase/supabase-js";
 import passport from "passport";
-import { router as routes } from "./routes/index.js";
+import router from "./routes/routes.js";
 import path from "node:path";
 import { fileURLToPath } from "url";
 import "./config/passport.js";
@@ -27,7 +28,7 @@ app.use(express.urlencoded({ extended: true }));
 const assetsPath = path.join(__dirname, "./public");
 app.use(express.static(assetsPath));
 
-const prisma = new PrismaClient();
+export const prisma = new PrismaClient();
 // Session setup
 app.use(
   session({
@@ -42,12 +43,17 @@ app.use(
     cookie: {
       maxAge: 1000 * 60 * 60 * 24, // 1 day
     },
-  })
+  }),
 );
 
 // Passport setup
 app.use(passport.initialize());
 app.use(passport.session());
+
+// Initialize Supabase client
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_KEY;
+export const supabase = createClient(supabaseUrl, supabaseKey);
 
 // app.use((req, res, next) => {
 //   console.log(
@@ -58,7 +64,7 @@ app.use(passport.session());
 //   // console.log("Body:", req.body);
 //   next();
 // });
-app.use(routes);
+app.use(router);
 
 app.listen(3000, () => console.log("Server running on port 3000"));
 

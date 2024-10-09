@@ -69,13 +69,14 @@ input {
   color: var(--font-color);
   font-size: 1.25rem;
   width: 100%;
-  text-align: start;
+  text-align: center;
   place-self: center;
 }
 
 ::placeholder {
   color: var(--font-color);
   text-align: center;
+  place-self: center;
 }
 
 button {

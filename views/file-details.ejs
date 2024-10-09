@@ -15,10 +15,13 @@
     <h1>File Details</h1>
     <h2>Name: <%= file.name %></h2>
     <h2>Type: <%= file.type %></h2>
-    <h2>Size: <%= file.size %></h2>
+    <h2>Size: <%= file.size %> bytes</h2>
     <% if (file.tags) { %>
         <h2>Tags: <%= file.tags %></h2>
     <% } %>
+    <h1>
+        <a href="<%= file.url %>">Download</a>
+    </h1>
 
     <%- include('partials/previous-folder', {previousURL: previousFolder}) %> 
 
