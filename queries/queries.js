@@ -34,6 +34,23 @@ export const tagQueries = {
       },
     });
   },
+  connectTagToFile: async (tagName, userId, fileId) => {
+    return prisma.tag.update({
+      where: {
+        ownerId_name: {
+          ownerId: userId,
+          name: tagName,
+        },
+      },
+      data: {
+        files: {
+          connect: {
+            id: fileId,
+          },
+        },
+      },
+    });
+  },
 };
 
 export const folderQueries = {
@@ -141,20 +158,6 @@ export const fileQueries = {
         tags: file.tags,
         size: file.size,
         type: file.type,
-        tags: {
-          connectOrCreate: file.tags.map((tag) => ({
-            where: {
-              ownerId_name: {
-                name: tag,
-                ownerId: file.ownerId,
-              },
-            },
-            create: {
-              name: tag,
-              ownerId: file.ownerId,
-            },
-          })),
-        },
       },
     });
   },

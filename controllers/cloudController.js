@@ -1,5 +1,9 @@
 import { folderQueries, fileQueries, tagQueries } from "../queries/queries.js";
 import { prisma, supabase } from "../app.js";
+import {
+  createAndConnectTagsToFile,
+  createAndConnectTagsToFolder,
+} from "../lib/createAndConnectTags.js";
 
 export const getCloudData = async (req, res) => {
   const currentFolders = await folderQueries.getOrphanFolders();
@@ -44,22 +48,8 @@ export const createFolder = async (req, res, next) => {
     await folderQueries.assignParentToFolder(newFolder.id, currentParentFolder);
   }
 
-  const folderTags = req.body.tags.split(",").map((tag) => tag.trim());
-  if (folderTags == [""]) return res.redirect(`/cloud/${newFolder.id}`);
-
-  for (const tag of folderTags) {
-    const tagExists = await tagQueries.checkIfTagExists(tag, req.user.id);
-    if (!tagExists) {
-      await tagQueries.createTag(tag, req.user.id);
-    }
-  }
-
-  await Promise.all(
-    folderTags.map((tag) =>
-      tagQueries.connectTagToFolder(tag, req.user.id, newFolder.id),
-    ),
-  );
-
+  // Create and connect tags to folder
+  createAndConnectTagsToFolder(req, res, newFolder.id);
   res.redirect(`/cloud/${newFolder.id}`);
 };
 
@@ -87,33 +77,38 @@ export const uploadFile = async (req, res, next) => {
       }
     }
   }
+
+  // Upload the file to supabase
   const { data, error } = await supabase.storage
     .from("files")
     .upload(`uploads/${req.file.originalname}`, req.file.buffer, {
       contentType: req.file.mimetype,
     });
+  if (error) {
+    console.error("Error uploading file:", error);
+  }
   console.log(`File uploaded: ${JSON.stringify(data, null, 2)}`);
 
+  // Get the public URL of the uploaded file
   const fileURL = supabase.storage
     .from("files")
     .getPublicUrl(`uploads/${req.file.originalname}`);
 
-  console.log(`File URL: ${JSON.stringify(fileURL, null, 2)}`);
-  const fileTags = req.body.tags.split(",").map((tag) => tag.trim());
+  console.log(`File URL: ${fileURL.data.publicUrl}`);
+
   const fileInfo = {
     name: req.file.originalname,
     url: fileURL.data.publicUrl,
     folderId: req.params.folderId || null,
     ownerId: req.user.id,
-    tags: fileTags || null,
     size: req.file.size,
     type: req.file.mimetype,
   };
 
-  // Store file in DB if needed
   await fileQueries.createFile(fileInfo);
+  createAndConnectTagsToFile(req, res, fileInfo.id);
 
-  res.redirect("/cloud");
+  res.redirect(`/cloud/${req.params.folderId}`);
 };
 
 export const viewFile = async (req, res) => {
