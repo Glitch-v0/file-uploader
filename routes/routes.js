@@ -16,8 +16,9 @@ import {
 } from "../controllers/cloudController.js";
 import multer from "multer";
 import tryCatch from "express-async-handler";
+import memory from "multer/storage/memory.js";
 
-const upload = multer({ dest: "./uploads/" });
+const upload = multer({ storage: memory() });
 const router = express.Router();
 
 // User routes
@@ -30,13 +31,13 @@ router.get("/logout", logoutUser);
 // Cloud routes
 router.get("/cloud", isAuthenticated, getCloudData);
 router.get("/cloud/:folderId", isAuthenticated, tryCatch(getFolderData));
-router.post("/cloud/:folderId?", isAuthenticated, tryCatch(createFolder));
 router.post(
   "/cloud/:folderId?/upload",
   isAuthenticated,
   upload.single("file-upload"),
   tryCatch(uploadFile),
 );
+router.post("/cloud/:folderId?", isAuthenticated, tryCatch(createFolder));
 router.get("/file/:folderId?/:fileId", isAuthenticated, viewFile);
 
 router.use((err, req, res, next) => {

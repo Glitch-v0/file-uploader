@@ -92,11 +92,13 @@ export const uploadFile = async (req, res, next) => {
     .upload(`uploads/${req.file.originalname}`, req.file.buffer, {
       contentType: req.file.mimetype,
     });
+  console.log(`File uploaded: ${JSON.stringify(data, null, 2)}`);
 
   const fileURL = supabase.storage
     .from("files")
     .getPublicUrl(`uploads/${req.file.originalname}`);
 
+  console.log(`File URL: ${JSON.stringify(fileURL, null, 2)}`);
   const fileTags = req.body.tags.split(",").map((tag) => tag.trim());
   const fileInfo = {
     name: req.file.originalname,
