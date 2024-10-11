@@ -51,6 +51,70 @@ export const tagQueries = {
       },
     });
   },
+  createAndConnectTagsToFile: async (req, fileId) => {
+    // Parse through form tags
+    const fileTags = req.body.tags.split(",").map((tag) => tag.trim());
+
+    // Skip if no tags
+    if (fileTags[0] == "" && fileTags.length == 1) {
+      console.log("No tags provided. Skipping.");
+      return;
+    }
+
+    return prisma.file.update({
+      where: {
+        id: fileId,
+      },
+      data: {
+        tags: {
+          connectOrCreate: fileTags.map((tagName) => ({
+            where: {
+              ownerId_name: {
+                name: tagName,
+                ownerId: req.user.id,
+              },
+            },
+            create: {
+              name: tagName,
+              ownerId: req.user.id,
+            },
+          })),
+        },
+      },
+    });
+  },
+  createAndConnectTagsToFolder: async (req, folderId) => {
+    // Parse through form tags
+    const folderTags = req.body.tags.split(",").map((tag) => tag.trim());
+    console.log({ folderTags });
+    // Skip if no tags
+    if (folderTags[0] == "" && folderTags.length == 1) {
+      console.log("No tags provided. Skipping.");
+      return;
+    }
+
+    return prisma.folder.update({
+      where: {
+        id: folderId,
+      },
+      data: {
+        tags: {
+          connectOrCreate: folderTags.map((tagName) => ({
+            where: {
+              ownerId_name: {
+                name: tagName,
+                ownerId: req.user.id,
+              },
+            },
+            create: {
+              name: tagName,
+              ownerId: req.user.id,
+            },
+          })),
+        },
+      },
+    });
+  },
 };
 
 export const folderQueries = {

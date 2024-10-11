@@ -1,9 +1,5 @@
 import { folderQueries, fileQueries, tagQueries } from "../queries/queries.js";
 import { prisma, supabase } from "../app.js";
-import {
-  createAndConnectTagsToFile,
-  createAndConnectTagsToFolder,
-} from "../lib/createAndConnectTags.js";
 
 export const getCloudData = async (req, res) => {
   const currentFolders = await folderQueries.getOrphanFolders();
@@ -49,7 +45,7 @@ export const createFolder = async (req, res, next) => {
   }
 
   // Create and connect tags to folder
-  createAndConnectTagsToFolder(req, res, newFolder.id);
+  tagQueries.createAndConnectTagsToFolder(req, newFolder.id);
   res.redirect(`/cloud/${newFolder.id}`);
 };
 
@@ -106,7 +102,7 @@ export const uploadFile = async (req, res, next) => {
   };
 
   await fileQueries.createFile(fileInfo);
-  createAndConnectTagsToFile(req, res, fileInfo.id);
+  tagQueries.createAndConnectTagsToFile(req, fileInfo.id);
 
   res.redirect(`/cloud/${req.params.folderId}`);
 };
