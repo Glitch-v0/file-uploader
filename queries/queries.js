@@ -118,6 +118,47 @@ export const tagQueries = {
 };
 
 export const folderQueries = {
+  createFolderWithRelations: async (
+    name,
+    userId,
+    parentFolderId = null,
+    tags = [],
+  ) => {
+    return prisma.folder.create({
+      data: {
+        name,
+        ownerId: userId,
+        ...(parentFolderId && {
+          parentFolder: {
+            connect: {
+              id: parentFolderId,
+            },
+          },
+        }),
+        ...(tags.length > 0 &&
+          tags[0] !== "" && {
+            tags: {
+              connectOrCreate: tags.map((tagName) => ({
+                where: {
+                  ownerId_name: {
+                    name: tagName,
+                    ownerId: userId,
+                  },
+                },
+                create: {
+                  name: tagName,
+                  ownerId: userId,
+                },
+              })),
+            },
+          }),
+      },
+      select: {
+        id: true,
+      },
+    });
+  },
+
   createFolder: (folderName, userId) => {
     return prisma.folder.create({
       data: {
@@ -222,6 +263,46 @@ export const fileQueries = {
         tags: file.tags,
         size: file.size,
         type: file.type,
+      },
+    });
+  },
+
+  createFileWithRelations: async ({
+    name,
+    userId,
+    url,
+    folderId = null,
+    tags = [],
+    size,
+    type,
+  }) => {
+    return prisma.file.create({
+      data: {
+        name,
+        url,
+        ownerId: userId,
+        ...(folderId && {
+          folderId: folderId,
+        }),
+        size,
+        type,
+        ...(tags.length > 0 &&
+          tags[0] !== "" && {
+            tags: {
+              connectOrCreate: tags.map((tagName) => ({
+                where: {
+                  ownerId_name: {
+                    name: tagName,
+                    ownerId: userId,
+                  },
+                },
+                create: {
+                  name: tagName,
+                  ownerId: userId,
+                },
+              })),
+            },
+          }),
       },
     });
   },

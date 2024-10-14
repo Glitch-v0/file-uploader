@@ -2,6 +2,7 @@ import { folderQueries, fileQueries, tagQueries } from "../queries/queries.js";
 import { prisma, supabase } from "../app.js";
 
 export const getCloudData = async (req, res) => {
+  console.log("Getting cloud data for root folder");
   const currentFolders = await folderQueries.getOrphanFolders();
   const currentFiles = await fileQueries.getOrphanFiles();
 
@@ -16,9 +17,15 @@ export const getCloudData = async (req, res) => {
 };
 
 export const getFolderData = async (req, res) => {
+  console.log("Getting cloud data for parent folder");
   const folderParameter = req.params.folderId;
+  if (folderParameter == undefined) return res.redirect("/cloud");
+  console.log(`getting folder ${folderParameter}`);
   const parentFolder = await folderQueries.getFolder(folderParameter);
-  if (!parentFolder) return res.redirect("/cloud");
+  if (!parentFolder) {
+    console.log(`Redirecting to cloud`);
+    return res.redirect("/cloud");
+  }
 
   const childFolders = await folderQueries.getFolderChildren(parentFolder.id);
   const childFiles = await fileQueries.getFilesByFolder(parentFolder.id);
@@ -35,17 +42,14 @@ export const getFolderData = async (req, res) => {
 
 export const createFolder = async (req, res, next) => {
   const currentParentFolder = req.params.folderId;
-  const newFolder = await folderQueries.createFolder(
+
+  const newFolder = await folderQueries.createFolderWithRelations(
     req.body.name,
     req.user.id,
+    currentParentFolder,
+    req.body.tags.split(",").map((tag) => tag.trim()),
   );
 
-  if (currentParentFolder) {
-    await folderQueries.assignParentToFolder(newFolder.id, currentParentFolder);
-  }
-
-  // Create and connect tags to folder
-  tagQueries.createAndConnectTagsToFolder(req, newFolder.id);
   res.redirect(`/cloud/${newFolder.id}`);
 };
 
@@ -77,11 +81,13 @@ export const uploadFile = async (req, res, next) => {
   // Upload the file to supabase
   const { data, error } = await supabase.storage
     .from("files")
-    .upload(`uploads/${req.file.originalname}`, req.file.buffer, {
+    .upload(`${req.user.id}/${req.file.id}`, req.file.buffer, {
       contentType: req.file.mimetype,
+      upsert: false,
     });
   if (error) {
     console.error("Error uploading file:", error);
+    return res.status(500).json({ error });
   }
   console.log(`File uploaded: ${JSON.stringify(data, null, 2)}`);
 
@@ -94,17 +100,19 @@ export const uploadFile = async (req, res, next) => {
 
   const fileInfo = {
     name: req.file.originalname,
+    userId: req.user.id,
     url: fileURL.data.publicUrl,
     folderId: req.params.folderId || null,
-    ownerId: req.user.id,
+    tags: req.body.tags.split(",").map((tag) => tag.trim()),
     size: req.file.size,
     type: req.file.mimetype,
   };
-
-  await fileQueries.createFile(fileInfo);
-  tagQueries.createAndConnectTagsToFile(req, fileInfo.id);
-
-  res.redirect(`/cloud/${req.params.folderId}`);
+  await fileQueries.createFileWithRelations(fileInfo);
+  if (req.params.folderId) {
+    res.redirect(`/cloud/${req.params.folderId}`);
+  } else {
+    res.redirect("/cloud");
+  }
 };
 
 export const viewFile = async (req, res) => {
