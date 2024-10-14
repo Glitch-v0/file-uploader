@@ -79,34 +79,44 @@ export const uploadFile = async (req, res, next) => {
   }
 
   // Upload the file to supabase
+  const uploadPath = req.params.folderId
+    ? `${req.user.id}/${req.params.folderId}/${req.file.originalname}`
+    : `${req.user.id}/${req.file.originalname}`;
+
   const { data, error } = await supabase.storage
     .from("files")
-    .upload(`${req.user.id}/${req.file.id}`, req.file.buffer, {
+    .upload(uploadPath, req.file.buffer, {
       contentType: req.file.mimetype,
       upsert: false,
     });
   if (error) {
-    console.error("Error uploading file:", error);
-    return res.status(500).json({ error });
+    return res.render("cloud", {
+      errors: [error.message],
+      files: [],
+      folders: [],
+      currentFolder: null,
+      currentURL: req.originalUrl,
+      previousFolder: null,
+    });
   }
+  console.log({ data });
   console.log(`File uploaded: ${JSON.stringify(data, null, 2)}`);
 
   // Get the public URL of the uploaded file
-  const fileURL = supabase.storage
-    .from("files")
-    .getPublicUrl(`uploads/${req.file.originalname}`);
+  const fileURL = data.fullPath;
 
-  console.log(`File URL: ${fileURL.data.publicUrl}`);
+  console.log(`File URL: ${fileURL}`);
 
   const fileInfo = {
     name: req.file.originalname,
     userId: req.user.id,
-    url: fileURL.data.publicUrl,
+    url: fileURL,
     folderId: req.params.folderId || null,
     tags: req.body.tags.split(",").map((tag) => tag.trim()),
     size: req.file.size,
     type: req.file.mimetype,
   };
+  console.log({ fileInfo });
   await fileQueries.createFileWithRelations(fileInfo);
   if (req.params.folderId) {
     res.redirect(`/cloud/${req.params.folderId}`);
