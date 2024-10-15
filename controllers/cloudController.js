@@ -1,8 +1,7 @@
 import { folderQueries, fileQueries, tagQueries } from "../queries/queries.js";
 import { prisma, supabase } from "../app.js";
 
-export const getCloudData = async (req, res) => {
-  console.log("Getting cloud data for root folder");
+export const getRootDirectoryData = async (req, res) => {
   const currentFolders = await folderQueries.getOrphanFolders();
   const currentFiles = await fileQueries.getOrphanFiles();
 
@@ -11,19 +10,16 @@ export const getCloudData = async (req, res) => {
     files: currentFiles,
     folders: currentFolders,
     currentFolder: null,
-    currentURL: req.originalUrl,
+    currentURL: "/cloud",
     previousFolder: null,
   });
 };
 
 export const getFolderData = async (req, res) => {
-  console.log("Getting cloud data for parent folder");
   const folderParameter = req.params.folderId;
   if (folderParameter == undefined) return res.redirect("/cloud");
-  console.log(`getting folder ${folderParameter}`);
   const parentFolder = await folderQueries.getFolder(folderParameter);
   if (!parentFolder) {
-    console.log(`Redirecting to cloud`);
     return res.redirect("/cloud");
   }
 
@@ -103,7 +99,7 @@ export const uploadFile = async (req, res, next) => {
   console.log(`File uploaded: ${JSON.stringify(data, null, 2)}`);
 
   // Get the public URL of the uploaded file
-  const fileURL = data.fullPath;
+  const fileURL = data.path;
 
   console.log(`File URL: ${fileURL}`);
 
@@ -128,7 +124,6 @@ export const uploadFile = async (req, res, next) => {
 export const viewFile = async (req, res) => {
   const file = await fileQueries.getFileById(req.params.fileId);
   if (!file) return res.redirect("/cloud");
-
   const parentFolder = await fileQueries.getParentFolder(req.params.fileId);
 
   res.render("file-details", {
@@ -136,4 +131,28 @@ export const viewFile = async (req, res) => {
     file: file,
     previousFolder: parentFolder?.folderId || "",
   });
+};
+
+export const downloadFile = async (req, res) => {
+  console.log("Downloading file");
+
+  // List files in the bucket
+  const { data: files, error: listError } = await supabase.storage
+    .from("files")
+    .list(req.params.storageLocation);
+  console.log({ files, listError });
+
+  const { data, error } = await supabase.storage
+    .from("files")
+    .download(req.params.storageLocation);
+
+  console.log({ data, error });
+  if (error) {
+    res.render("error", {
+      errors: [error.message],
+    });
+  } else {
+    console.log(`File downloaded: ${data.fullPath}`);
+    res.download(data.fullPath);
+  }
 };

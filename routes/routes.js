@@ -8,14 +8,15 @@ import {
   renderLoginFailure,
 } from "../controllers/userController.js";
 import {
-  getCloudData,
+  getRootDirectoryData,
   getFolderData,
   createFolder,
   uploadFile,
   viewFile,
+  downloadFile,
 } from "../controllers/cloudController.js";
 import multer from "multer";
-import tryCatch from "express-async-handler";
+import asyncHandler from "express-async-handler";
 
 const upload = multer({ storage: multer.memoryStorage() });
 const router = express.Router();
@@ -27,23 +28,26 @@ router.post("/login", loginUser);
 router.get("/login-failure", renderLoginFailure);
 router.get("/logout", logoutUser);
 
+router.use(isAuthenticated); // Protect all routes below
+
 // Cloud routes
-router.get("/cloud", isAuthenticated, getCloudData);
-router.get("/cloud/:folderId", isAuthenticated, tryCatch(getFolderData));
+router.get("/cloud", getRootDirectoryData);
+router.get("/cloud/:folderId", asyncHandler(getFolderData));
 router.post(
-  "/cloud//upload",
-  isAuthenticated,
+  // upload to root directory
+  "/cloud/upload",
   upload.single("file-upload"),
-  tryCatch(uploadFile),
+  asyncHandler(uploadFile),
 );
 router.post(
+  // upload to a parent folder
   "/cloud/:folderId?/upload",
-  isAuthenticated,
   upload.single("file-upload"),
-  tryCatch(uploadFile),
+  asyncHandler(uploadFile),
 );
-router.post("/cloud/:folderId?", isAuthenticated, tryCatch(createFolder));
-router.get("/file/:folderId?/:fileId", isAuthenticated, viewFile);
+router.post("/cloud/:folderId?", asyncHandler(createFolder));
+router.get("/cloud/:fileId/download", asyncHandler(downloadFile));
+router.get("/cloud/:folderId?/:fileId/view", asyncHandler(viewFile));
 
 router.use((err, req, res, next) => {
   console.error(err.stack);
