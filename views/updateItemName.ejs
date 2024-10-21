@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloud | Update</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <%- include('partials/navbar', {links: ['cloud', 'logout']}) %> 
+    <% if (errors) { %> 
+      <%- include('partials/errors', { errors: errors }) %> 
+    <% } %>
+
+    <form action="<%= submissionURL %>" method="POST">
+        <% if (type == 'folder') { %>
+            <img class="icon" src="/icons/folder.svg" alt="folder icon" />
+        <% } else { %>
+            <img class="icon" src="/icons/file.svg" alt="file icon" />
+        <% } %>
+        <h3><%= item.name %> </h3>
+        <input type="text" name="name" placeholder="New Name" required>
+        <button>Update Name</button>
+    </form>
+
+    <% if (previousFolder) { %>
+        <%- include('partials/previous-folder', {previousURL: previousFolder}) %> 
+      <% } %>
+</body>
+</html>

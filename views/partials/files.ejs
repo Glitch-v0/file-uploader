@@ -10,11 +10,12 @@
             <%= file.name %>
           </a>          
         </h3>
-        <button>
-          <a href="/cloud<%= file.folderId ? `/${file.folderId}` : '' %>/<%= file.id %>/deleteFile">
-            <img class="icon delete" src="/icons/delete.svg" alt="delete icon" />
-          </a>
-        </button>
+        <a href="/cloud<%= file.folderId ? `/${file.folderId}` : '' %>/<%= file.id %>/deleteFile">
+          <img class="icon delete" src="/icons/delete.svg" alt="delete icon" />
+        </a>
+        <a href="/cloud<%= file.folderId ? `/${file.folderId}` : '' %>/<%= file.id %>/updateFile">
+          <img class="icon update" src="/icons/pencil.svg" alt="folder update">
+        </a>
       </div>
       <% }) %>
     </div>

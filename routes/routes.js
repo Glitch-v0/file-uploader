@@ -42,7 +42,18 @@ router.get(
   "/cloud/:folderId?/deleteFolder",
   asyncHandler(storageController.deleteFolder),
 );
+
 router.post("/cloud/:folderId?", asyncHandler(storageController.createFolder));
+
+router.get(
+  "/cloud/:folderId?/:fileId?/updateFolder",
+  asyncHandler(storageController.getFolderUpdateForm),
+);
+router.post(
+  "/cloud/:folderId?/:fileId?/updateFolder",
+  asyncHandler(storageController.updateFolder),
+);
+
 router.get(
   "/cloud/:fileId/download",
   asyncHandler(storageController.downloadFile),

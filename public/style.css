@@ -153,13 +153,15 @@ nav a {
 .folder-card,
 .file-card {
   display: grid;
+  grid-template-columns: 1fr 3fr 1fr 1fr;
   background-color: var(--form-background-color); /* Card background color */
   border: 2px solid var(--extra-background-color); /* Card border */
   border-radius: 8px; /* Rounded corners */
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-  padding: 10px; /* Inner padding */
-  text-align: center; /* Center text */
-  width: 150px; /* Fixed width for uniformity */
+  padding: 10px;
+  text-align: center;
+  place-items: center;
+  width: 300px; /* Fixed width for uniformity */
   transition: transform 0.2s; /* Animation on hover */
 }
 
@@ -170,7 +172,7 @@ nav a {
 }
 
 .folder-card:hover {
-  transform: scale(1.05); /* Slightly enlarge on hover */
+  transform: scale(1.05);
 }
 
 .icon {
@@ -187,18 +189,14 @@ nav a {
 
 .folder-name {
   margin-top: 10px; /* Space between icon and name */
-  font-size: 16px; /* Font size */
-  color: var(--font-color); /* Text color */
+  font-size: 16px;
+  color: var(--font-color);
   text-decoration: none; /* Remove underline */
 }
 
-.folder-name a {
-  color: inherit; /* Inherit color from parent */
+a {
+  color: inherit;
   text-decoration: none; /* Remove underline */
-}
-
-.folder-name a:hover {
-  text-decoration: underline; /* Underline on hover */
 }
 
 @media screen and (max-width: 800px) {

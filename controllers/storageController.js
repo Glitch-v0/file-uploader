@@ -50,6 +50,27 @@ export const storageController = {
     res.redirect(`/cloud/${newFolder.id}`);
   },
 
+  getFolderUpdateForm: async (req, res, next) => {
+    const folder = await folderQueries.getFolder(req.params.folderId);
+    console.log({ folder });
+    res.render("updateItemName", {
+      errors: null,
+      item: folder,
+      type: "folder",
+      submissionURL: req.originalUrl,
+      previousFolder: folder.parentFolderId || " ",
+    });
+  },
+
+  updateFolder: async (req, res, next) => {
+    const folder = await folderQueries.updateFolderName(
+      req.params.folderId,
+      req.body.name,
+    );
+    console.log(`Going back to folder ${folder.id}`);
+    res.redirect(`/cloud/${folder.id}`);
+  },
+
   deleteFolder: async (req, res, next) => {
     // Recursively get all child folders and files
     const folderIds = await folderQueries.getAllFolderIds(req.params.folderId);

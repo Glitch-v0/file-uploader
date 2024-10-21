@@ -211,6 +211,18 @@ export const folderQueries = {
     });
   },
 
+  updateFolderName: (folderId, folderName) => {
+    console.log({ folderId, folderName });
+    return prisma.folder.update({
+      where: {
+        id: folderId,
+      },
+      data: {
+        name: folderName,
+      },
+    });
+  },
+
   deleteFolders: async (foldersToDelete) => {
     // Make sure operations happen together
     return await prisma.$transaction(async (prisma) => {
