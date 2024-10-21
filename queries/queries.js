@@ -381,6 +381,17 @@ export const fileQueries = {
     });
   },
 
+  updateFileName: (fileId, newName) => {
+    return prisma.file.update({
+      where: {
+        id: fileId,
+      },
+      data: {
+        name: newName,
+      },
+    });
+  },
+
   deleteFile: (fileId) => {
     return prisma.file.delete({
       where: {

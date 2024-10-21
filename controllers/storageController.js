@@ -62,13 +62,70 @@ export const storageController = {
     });
   },
 
+  getFileUpdateForm: async (req, res, next) => {
+    console.log(req.params);
+    console.log(`Passing file ${req.params.fileId} to prisma search query`);
+    const file = await fileQueries.getFileById(req.params.fileId);
+    console.log({ file });
+    res.render("updateItemName", {
+      errors: null,
+      item: file,
+      type: "file",
+      submissionURL: req.originalUrl,
+      previousFolder: file.folderId || " ",
+    });
+  },
+
   updateFolder: async (req, res, next) => {
     const folder = await folderQueries.updateFolderName(
       req.params.folderId,
       req.body.name,
     );
+    if (folder.parentFolderId) {
+      res.redirect(`/cloud/${folder.parentFolderId}`);
+    }
     console.log(`Going back to folder ${folder.id}`);
     res.redirect(`/cloud/${folder.id}`);
+  },
+
+  updateFile: async (req, res, next) => {
+    const file = await fileQueries.getFileById(req.params.fileId);
+    const fileExtension = file.name.split(".").pop();
+    const newFileName = `${req.body.name}.${fileExtension}`;
+
+    // Check if file name has indeed changed
+    if (file.name === newFileName) {
+      return res.render("updateItemName", {
+        errors: [{ msg: "Same name entered. File not renamed." }],
+        item: file,
+        type: "file",
+        submissionURL: req.originalUrl,
+        previousFolder: file.folderId || " ",
+      });
+    }
+
+    // Supabase File update
+    const currentURL = file.url;
+    const newURL = currentURL.replace(file.name, newFileName);
+    console.log(`Updating filename in supabase: ${file.url} to... ${newURL}`);
+    const { data, error } = await supabase.storage
+      .from("files")
+      .move(file.url, newURL);
+
+    if (error) {
+      console.log({ error });
+      throw new Error("Failed to rename file");
+    }
+
+    // Prisma File update
+    const renamedFile = await fileQueries.updateFileName(
+      req.params.fileId,
+      newFileName,
+    );
+    if (renamedFile.folderId) {
+      res.redirect(`/cloud/${renamedFile.folderId}`);
+    }
+    res.redirect(`/cloud`);
   },
 
   deleteFolder: async (req, res, next) => {

@@ -34,7 +34,7 @@ router.post(
 );
 router.get(
   // delete a file
-  "/cloud/:folderId?/:fileId/deleteFile",
+  "/cloud/:fileId/deleteFile",
   asyncHandler(storageController.deleteFile),
 );
 router.get(
@@ -45,13 +45,24 @@ router.get(
 
 router.post("/cloud/:folderId?", asyncHandler(storageController.createFolder));
 
+// Updating Folders
 router.get(
-  "/cloud/:folderId?/:fileId?/updateFolder",
+  "/cloud/:folderId?/updateFolder",
   asyncHandler(storageController.getFolderUpdateForm),
 );
 router.post(
   "/cloud/:folderId?/:fileId?/updateFolder",
   asyncHandler(storageController.updateFolder),
+);
+
+// Updating Files
+router.get(
+  "/cloud/:fileId?/updateFile",
+  asyncHandler(storageController.getFileUpdateForm),
+);
+router.post(
+  "/cloud/:fileId?/updateFile",
+  asyncHandler(storageController.updateFile),
 );
 
 router.get(
