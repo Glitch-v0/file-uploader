@@ -1,20 +1,7 @@
 import express from "express";
 import { isAuthenticated } from "../middleware/authRoute.js";
-import {
-  renderLogin,
-  registerUser,
-  loginUser,
-  logoutUser,
-  renderLoginFailure,
-} from "../controllers/userController.js";
-import {
-  getRootDirectoryData,
-  getFolderData,
-  createFolder,
-  uploadFile,
-  viewFile,
-  downloadFile,
-} from "../controllers/cloudController.js";
+import { userController } from "../controllers/userController.js";
+import { storageController } from "../controllers/storageController.js";
 import multer from "multer";
 import asyncHandler from "express-async-handler";
 
@@ -22,32 +9,48 @@ const upload = multer({ storage: multer.memoryStorage() });
 const router = express.Router();
 
 // User routes
-router.get("/", renderLogin);
-router.post("/", registerUser);
-router.post("/login", loginUser);
-router.get("/login-failure", renderLoginFailure);
-router.get("/logout", logoutUser);
+router.get("/", userController.renderLogin);
+router.post("/", userController.registerUser);
+router.post("/login", userController.loginUser);
+router.get("/login-failure", userController.renderLoginFailure);
+router.get("/logout", userController.logoutUser);
 
 router.use(isAuthenticated); // Protect all routes below
 
 // Cloud routes
-router.get("/cloud", getRootDirectoryData);
-router.get("/cloud/:folderId", asyncHandler(getFolderData));
+router.get("/cloud", storageController.getRootDirectoryData);
+router.get("/cloud/:folderId", asyncHandler(storageController.getFolderData));
 router.post(
   // upload to root directory
   "/cloud/upload",
   upload.single("file-upload"),
-  asyncHandler(uploadFile),
+  asyncHandler(storageController.uploadFile),
 );
 router.post(
   // upload to a parent folder
   "/cloud/:folderId?/upload",
   upload.single("file-upload"),
-  asyncHandler(uploadFile),
+  asyncHandler(storageController.uploadFile),
 );
-router.post("/cloud/:folderId?", asyncHandler(createFolder));
-router.get("/cloud/:fileId/download", asyncHandler(downloadFile));
-router.get("/cloud/:folderId?/:fileId/view", asyncHandler(viewFile));
+router.get(
+  // delete a file
+  "/cloud/:folderId?/:fileId/deleteFile",
+  asyncHandler(storageController.deleteFile),
+);
+router.get(
+  // delete a folder
+  "/cloud/:folderId?/deleteFolder",
+  asyncHandler(storageController.deleteFolder),
+);
+router.post("/cloud/:folderId?", asyncHandler(storageController.createFolder));
+router.get(
+  "/cloud/:fileId/download",
+  asyncHandler(storageController.downloadFile),
+);
+router.get(
+  "/cloud/:folderId?/:fileId/view",
+  asyncHandler(storageController.viewFile),
+);
 
 router.use((err, req, res, next) => {
   console.error(err.stack);

@@ -12,6 +12,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@prisma/client": "^5.21.1",
     "@quixo3/prisma-session-store": "^3.1.13",
     "@supabase/supabase-js": "^2.45.4",
     "bcrypt": "^5.1.1",
@@ -28,7 +29,7 @@
   "devDependencies": {
     "concurrently": "^9.0.1",
     "prettier": "3.3.3",
-    "prisma": "^5.20.0"
+    "prisma": "^5.21.1"
   },
   "type": "module"
 }

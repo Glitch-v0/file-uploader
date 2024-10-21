@@ -83,6 +83,7 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
+  justify-self: center;
   gap: 1rem;
 }
 
@@ -126,27 +127,46 @@ nav a {
   color: var(--font-color);
 }
 
+.view-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
 .creation-container {
   display: flex;
   gap: 2rem;
 }
 
-.folder-container {
+.folder-container,
+.file-container {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem; /* Space between cards */
   justify-content: center; /* Center align cards */
 }
 
-.folder-card {
+.folder-container {
+  margin-top: 2rem;
+}
+
+.folder-card,
+.file-card {
+  display: grid;
   background-color: var(--form-background-color); /* Card background color */
   border: 2px solid var(--extra-background-color); /* Card border */
   border-radius: 8px; /* Rounded corners */
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-  padding: 15px; /* Inner padding */
+  padding: 10px; /* Inner padding */
   text-align: center; /* Center text */
   width: 150px; /* Fixed width for uniformity */
   transition: transform 0.2s; /* Animation on hover */
+}
+
+.folder-card button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
 }
 
 .folder-card:hover {
@@ -157,6 +177,12 @@ nav a {
   width: 48px;
   height: 48px;
   place-self: center;
+}
+
+.delete:hover {
+  filter: invert(15%) sepia(65%) saturate(4809%) hue-rotate(352deg)
+    brightness(85%) contrast(82%);
+  cursor: pointer;
 }
 
 .folder-name {

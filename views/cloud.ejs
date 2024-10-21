@@ -13,25 +13,29 @@
         <%- include('partials/errors', { errors: errors }) %> 
       <% } %>
     
-      <% if (currentFolder) { %>
-        <h1>Viewing "<%= currentFolder %>"</h1>
-      <% } %>
-    
-      <% if (folders && folders.length) { %> 
-        <%- include('partials/folders', {folders: folders, previousURL: previousFolder}) %> 
-      <% } else { %>
-        <h2>(No folders here)</h2>
-      <% } %>
+      
+      
+      <div class="viewContainer">
+        <% if (currentFolder) { %>
+          <h1>Viewing "<%= currentFolder %>"</h1>
+        <% } %>
+        
+        <% if (folders && folders.length) { %> 
+          <%- include('partials/folders', {folders: folders, previousURL: previousFolder}) %> 
+        <% } else { %>
+          <h2>(No folders here)</h2>
+        <% } %>
+  
+        <% if (files && files.length) { %> 
+          <%- include('partials/files', {files: files, previousURL: previousFolder}) %> 
+        <% } else { %>
+          <h2>(No files here)</h2>
+        <% } %>
 
-      <% if (files && files.length) { %> 
-        <%- include('partials/files', {files: files, previousURL: previousFolder}) %> 
-      <% } else { %>
-        <h2>(No files here)</h2>
-      <% } %>
-
-      <% if (previousFolder) { %>
-        <%- include('partials/previous-folder', {previousURL: previousFolder}) %> 
-      <% } %>
+        <% if (previousFolder) { %>
+          <%- include('partials/previous-folder', {previousURL: previousFolder}) %> 
+        <% } %>
+      </div>
 
       <div class="creation-container">
         <%- include('partials/create-folder', {submissionURL: currentURL}) %>

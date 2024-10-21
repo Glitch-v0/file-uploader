@@ -129,11 +129,7 @@ export const folderQueries = {
         name,
         ownerId: userId,
         ...(parentFolderId && {
-          parentFolder: {
-            connect: {
-              id: parentFolderId,
-            },
-          },
+          parentFolderId: parentFolderId,
         }),
         ...(tags.length > 0 &&
           tags[0] !== "" && {
@@ -214,6 +210,48 @@ export const folderQueries = {
       },
     });
   },
+
+  deleteFolders: async (foldersToDelete) => {
+    // Make sure operations happen together
+    return await prisma.$transaction(async (prisma) => {
+      // Delete files
+      await prisma.file.deleteMany({
+        where: {
+          folderId: { in: foldersToDelete },
+        },
+      });
+
+      // Delete folders
+      return await prisma.folder.deleteMany({
+        where: {
+          id: { in: foldersToDelete },
+        },
+      });
+    });
+  },
+
+  // Helper function to recursively gather all folder IDs
+  getAllFolderIds: async (folderId) => {
+    const folderIds = [folderId];
+
+    // Get all immediate child folders for the given folderId
+    const childFolders = await prisma.folder.findMany({
+      where: {
+        parentFolderId: folderId,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    // If there are child folders, gather their IDs recursively
+    for (const child of childFolders) {
+      const childFolderIds = await folderQueries.getAllFolderIds(child.id);
+      folderIds.push(...childFolderIds);
+    }
+
+    return folderIds;
+  },
 };
 
 export const fileQueries = {
@@ -232,6 +270,19 @@ export const fileQueries = {
         folderId: folderId,
       },
     });
+  },
+
+  getFilesByFolders: async (folderIds) => {
+    const files = await prisma.file.findMany({
+      where: {
+        folderId: { in: folderIds },
+      },
+      select: {
+        url: true,
+      },
+    });
+
+    return files.map((file) => file.url);
   },
 
   getFileById: (fileId) => {
@@ -314,6 +365,14 @@ export const fileQueries = {
       },
       select: {
         url: true,
+      },
+    });
+  },
+
+  deleteFile: (fileId) => {
+    return prisma.file.delete({
+      where: {
+        id: fileId,
       },
     });
   },

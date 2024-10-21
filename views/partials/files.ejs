@@ -10,6 +10,11 @@
             <%= file.name %>
           </a>          
         </h3>
+        <button>
+          <a href="/cloud<%= file.folderId ? `/${file.folderId}` : '' %>/<%= file.id %>/deleteFile">
+            <img class="icon delete" src="/icons/delete.svg" alt="delete icon" />
+          </a>
+        </button>
       </div>
       <% }) %>
     </div>
