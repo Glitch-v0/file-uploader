@@ -120,6 +120,7 @@ nav ul {
   justify-content: space-around;
   gap: 1rem;
   font-variant: small-caps;
+  padding: 0;
 }
 
 nav a {

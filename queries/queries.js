@@ -381,13 +381,14 @@ export const fileQueries = {
     });
   },
 
-  updateFileName: (fileId, newName) => {
+  updateFile: (fileId, newName, newURL) => {
     return prisma.file.update({
       where: {
         id: fileId,
       },
       data: {
         name: newName,
+        url: newURL,
       },
     });
   },

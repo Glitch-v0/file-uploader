@@ -118,9 +118,10 @@ export const storageController = {
     }
 
     // Prisma File update
-    const renamedFile = await fileQueries.updateFileName(
+    const renamedFile = await fileQueries.updateFile(
       req.params.fileId,
       newFileName,
+      newURL,
     );
     if (renamedFile.folderId) {
       res.redirect(`/cloud/${renamedFile.folderId}`);
@@ -265,25 +266,33 @@ export const storageController = {
 
   downloadFile: async (req, res) => {
     console.log("Downloading file");
+    const file = await fileQueries.getFileById(req.params.fileId);
 
-    // List files in the bucket
-    const { data: files, error: listError } = await supabase.storage
-      .from("files")
-      .list(req.params.storageLocation);
-    console.log({ files, listError });
-
+    console.log(`File URL: ${file.url}`);
     const { data, error } = await supabase.storage
       .from("files")
-      .download(req.params.storageLocation);
-
-    console.log({ data, error });
+      .download(file.url);
     if (error) {
-      res.render("error", {
+      res.render("file-details", {
         errors: [error.message],
+        file: file,
+        previousFolder: parentFolder?.folderId || "",
       });
     } else {
-      console.log(`File downloaded: ${data.fullPath}`);
-      res.download(data.fullPath);
+      // Set the appropriate headers for file download
+      res.setHeader(
+        "Content-Disposition",
+        `attachment; filename="${file.name}"`,
+      );
+      res.setHeader(
+        "Content-Type",
+        file.mimetype || "application/octet-stream",
+      );
+
+      // Convert Blob to Buffer and send
+      const arrayBuffer = await data.arrayBuffer();
+      const buffer = Buffer.from(arrayBuffer);
+      res.send(buffer);
     }
   },
 };
