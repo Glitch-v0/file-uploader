@@ -41,7 +41,6 @@ export const storageController = {
   createFolder: async (req, res, next) => {
     const currentParentFolder = req.params.folderId;
     const tags = cleanTags(req.body.tags);
-    console.log({ tags });
 
     const newFolder = await folderQueries.createFolderWithRelations(
       req.body.name,
@@ -55,7 +54,6 @@ export const storageController = {
 
   getFolderUpdateForm: async (req, res, next) => {
     const folder = await folderQueries.getFolder(req.params.folderId);
-    console.log({ folder });
     res.render("updateItemName", {
       errors: null,
       item: folder,
@@ -66,10 +64,7 @@ export const storageController = {
   },
 
   getFileUpdateForm: async (req, res, next) => {
-    console.log(req.params);
-    console.log(`Passing file ${req.params.fileId} to prisma search query`);
     const file = await fileQueries.getFileById(req.params.fileId);
-    console.log({ file });
     res.render("updateItemName", {
       errors: null,
       item: file,
@@ -87,7 +82,6 @@ export const storageController = {
     if (folder.parentFolderId) {
       res.redirect(`/cloud/${folder.parentFolderId}`);
     }
-    console.log(`Going back to folder ${folder.id}`);
     res.redirect(`/cloud/${folder.id}`);
   },
 
@@ -110,13 +104,11 @@ export const storageController = {
     // Supabase File update
     const currentURL = file.url;
     const newURL = currentURL.replace(file.name, newFileName);
-    console.log(`Updating filename in supabase: ${file.url} to... ${newURL}`);
     const { data, error } = await supabase.storage
       .from("files")
       .move(file.url, newURL);
 
     if (error) {
-      console.log({ error });
       throw new Error("Failed to rename file");
     }
 
@@ -136,14 +128,12 @@ export const storageController = {
     // Recursively get all child folders and files
     const folderIds = await folderQueries.getAllFolderIds(req.params.folderId);
     const fileURLs = await fileQueries.getFilesByFolders(folderIds);
-    console.log({ folderIds, fileURLs });
 
     // Supabase Folder deletion
     const supabaseSuccess = await supabase.storage
       .from("files")
       .remove(fileURLs);
 
-    console.log({ success: supabaseSuccess });
     if (!supabaseSuccess) {
       throw new Error("Failed to delete folder from supabase");
     }
@@ -151,11 +141,9 @@ export const storageController = {
     // Prisma Folder deletion
     const dbSuccess = await folderQueries.deleteFolders(folderIds);
     if (!dbSuccess) {
-      console.log({ dbSuccess });
       throw new Error("Failed to delete folder with prisma");
     }
 
-    console.log("Just like that...gone");
     res.redirect("/cloud");
   },
 
@@ -179,7 +167,6 @@ export const storageController = {
       throw new Error("Failed to delete file");
     }
     res.redirect("/cloud");
-    console.log("File deleted successfully");
   },
 
   uploadFile: async (req, res, next) => {
@@ -188,21 +175,15 @@ export const storageController = {
       await supabase.storage.listBuckets();
 
     if (listError) {
-      console.error("Error listing buckets:", listError.message);
+      throw new Error("Error listing buckets:", listError.message);
     } else {
-      console.log(`Current buckets: ${JSON.stringify(bucketList, null, 2)}`);
-
       // Create a new bucket if none exist
       if (bucketList.length === 0) {
         const { data: newBucket, error: createError } =
           await supabase.storage.createBucket("files");
 
         if (createError) {
-          console.error("Error creating bucket:", createError.message);
-        } else {
-          console.log(
-            `New bucket created: ${JSON.stringify(newBucket, null, 2)}`,
-          );
+          throw new Error("Error creating bucket:", createError.message);
         }
       }
     }
@@ -229,14 +210,9 @@ export const storageController = {
         previousFolder: null,
       });
     }
-    console.log({ data });
-    console.log(`File uploaded: ${JSON.stringify(data, null, 2)}`);
 
     // Get the public URL of the uploaded file
     const fileURL = data.path;
-
-    console.log(`File URL: ${fileURL}`);
-
     const fileInfo = {
       name: req.file.originalname,
       userId: req.user.id,
@@ -246,7 +222,6 @@ export const storageController = {
       size: req.file.size,
       type: req.file.mimetype,
     };
-    console.log({ fileInfo });
     await fileQueries.createFileWithRelations(fileInfo);
     if (req.params.folderId) {
       res.redirect(`/cloud/${req.params.folderId}`);
@@ -269,8 +244,8 @@ export const storageController = {
 
   searchAll: async (req, res) => {
     const searchTerm = req.body.searchTerm;
-    const { tags, files, folders } = await tagQueries.searchTags(searchTerm);
-    console.log({ tags, files, folders });
+    const { tags, files, folders } =
+      await tagQueries.searchItemsForTerm(searchTerm);
     res.render("search", {
       errors: null,
       tags: tags,
@@ -280,10 +255,8 @@ export const storageController = {
   },
 
   downloadFile: async (req, res) => {
-    console.log("Downloading file");
     const file = await fileQueries.getFileById(req.params.fileId);
 
-    console.log(`File URL: ${file.url}`);
     const { data, error } = await supabase.storage
       .from("files")
       .download(file.url);

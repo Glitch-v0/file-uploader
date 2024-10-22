@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cloud | <%= file.name %> </title>
+    <title>Cloud | <%= tag.name %> </title>
     <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-    <%- include('partials/navbar', {links: ['Cloud', 'Search', 'Logout']}) %>
+    <%- include('partials/navbar', {links: ['Cloud']}) %>
     <% if (errors) { %>
         <%- include('partials/errors', { errors: errors }) %>
     <% } %>

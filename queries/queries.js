@@ -116,7 +116,7 @@ export const tagQueries = {
     });
   },
 
-  searchTags: async (searchTerm) => {
+  searchItemsForTerm: async (searchTerm) => {
     return prisma.$transaction(async () => {
       const [tags, files, folders] = await Promise.all([
         prisma.tag.findMany({
@@ -181,6 +181,41 @@ export const tagQueries = {
       ]);
 
       return { tags, files, folders };
+    });
+  },
+
+  searchItemsForTag: async (tag) => {
+    return prisma.$transaction(async () => {
+      const [files, folders] = await Promise.all([
+        prisma.file.findMany({
+          where: {
+            tags: {
+              some: {
+                name: tag,
+              },
+            },
+          },
+          select: {
+            name: true,
+            id: true,
+          },
+        }),
+        prisma.folder.findMany({
+          where: {
+            tags: {
+              some: {
+                name: tag,
+              },
+            },
+          },
+          select: {
+            name: true,
+            id: true,
+          },
+        }),
+      ]);
+
+      return { files, folders };
     });
   },
 };

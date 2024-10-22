@@ -19,6 +19,10 @@
         <% if (currentFolder) { %>
           <h1>Viewing "<%= currentFolder %>"</h1>
         <% } %>
+
+        <% if (currentFolder.tags) { %>
+          <h1>Tags:</h1>
+        <% } %>
         
         <% if (folders && folders.length) { %> 
           <%- include('partials/folders', {folders: folders, previousURL: previousFolder}) %> 
