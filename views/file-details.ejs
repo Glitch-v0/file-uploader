@@ -16,14 +16,12 @@
     <h2>Name: <%= file.name %></h2>
     <h2>Type: <%= file.type %></h2>
     <h2>Size: <%= file.size %> bytes</h2>
-    <% if (file.tags) { %>
-        <h2>Tags: <%= file.tags %></h2>
+    <% if (tags) { %>
+        <%- include('partials/tags', {tags: tags.tags}) %> 
     <% } %>
-    <button>
-        <h1>
-            <a href=<%= `/cloud/${file.id}/download` %> >Download</a>
-        </h1>
-    </button>
+    <h1>
+        <a href= <%= `/cloud/${file.id}/download` %> class="download" >Download</a>
+    </h1>
 
     <%- include('partials/previous-folder', {previousURL: previousFolder}) %> 
 

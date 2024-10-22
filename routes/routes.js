@@ -75,6 +75,8 @@ router.get(
   asyncHandler(storageController.viewFile),
 );
 
+router.get("/tag/:tagId", asyncHandler(storageController.viewTags));
+
 router.get("/search", (req, res, next) => {
   res.render("search", {
     errors: null,

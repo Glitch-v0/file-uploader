@@ -17,11 +17,11 @@
       
       <div class="viewContainer">
         <% if (currentFolder) { %>
-          <h1>Viewing "<%= currentFolder %>"</h1>
+          <h1>Viewing "<%= currentFolder.name %>"</h1>
         <% } %>
 
-        <% if (currentFolder.tags) { %>
-          <h1>Tags:</h1>
+        <% if (currentFolderTags) { %>
+          <%- include('partials/tags', {tags: currentFolderTags}) %> 
         <% } %>
         
         <% if (folders && folders.length) { %> 

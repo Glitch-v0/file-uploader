@@ -79,12 +79,23 @@ input {
   place-self: center;
 }
 
-button {
+button,
+.download {
   display: flex;
   align-items: center;
   justify-content: center;
   justify-self: center;
   gap: 1rem;
+}
+
+.download {
+  background-color: var(--form-background-color);
+  border-radius: 12px;
+  padding: 0.5rem;
+}
+
+.download:hover {
+  background-color: var(--extra-background-color);
 }
 
 form button {
@@ -140,7 +151,8 @@ nav a {
 }
 
 .folder-container,
-.file-container {
+.file-container,
+.tag-container {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem; /* Space between cards */

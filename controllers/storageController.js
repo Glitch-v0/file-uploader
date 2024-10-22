@@ -12,6 +12,7 @@ export const storageController = {
       files: currentFiles,
       folders: currentFolders,
       currentFolder: null,
+      currentFolderTags: null,
       currentURL: "/cloud",
       previousFolder: null,
     });
@@ -20,7 +21,9 @@ export const storageController = {
   getFolderData: async (req, res) => {
     const folderParameter = req.params.folderId;
     if (folderParameter == undefined) return res.redirect("/cloud");
-    const parentFolder = await folderQueries.getFolder(folderParameter);
+    const parentFolder = await folderQueries.getFolderAndTags(folderParameter);
+    const parentFolderTags = parentFolder.tags;
+    console.log({ parentFolder });
     if (!parentFolder) {
       return res.redirect("/cloud");
     }
@@ -32,7 +35,8 @@ export const storageController = {
       errors: null,
       files: childFiles,
       folders: childFolders,
-      currentFolder: parentFolder.name,
+      currentFolder: parentFolder,
+      currentFolderTags: parentFolderTags,
       currentURL: req.originalUrl,
       previousFolder: parentFolder.parentFolderId || " ",
     });
@@ -234,18 +238,33 @@ export const storageController = {
     const file = await fileQueries.getFileById(req.params.fileId);
     if (!file) return res.redirect("/cloud");
     const parentFolder = await fileQueries.getParentFolder(req.params.fileId);
+    const fileTags = await fileQueries.getFileTags(req.params.fileId);
+    console.log({ fileTags });
 
     res.render("file-details", {
       errors: null,
       file: file,
       previousFolder: parentFolder?.folderId || "",
+      tags: fileTags,
+    });
+  },
+
+  viewTags: async (req, res) => {
+    const tag = await tagQueries.getTag(parseInt(req.params.tagId));
+    console.log({ tag });
+    const { files, folders } = await tagQueries.getItemsByTag(tag.id);
+    console.log({ files, folders });
+    res.render("tag-details", {
+      errors: null,
+      tag: tag,
+      files: files,
+      folders: folders,
     });
   },
 
   searchAll: async (req, res) => {
     const searchTerm = req.body.searchTerm;
-    const { tags, files, folders } =
-      await tagQueries.searchItemsForTerm(searchTerm);
+    const { tags, files, folders } = await tagQueries.searchAll(searchTerm);
     res.render("search", {
       errors: null,
       tags: tags,

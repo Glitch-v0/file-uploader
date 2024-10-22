@@ -7,25 +7,25 @@
     <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-    <%- include('partials/navbar', {links: ['Cloud']}) %>
+    <%- include('partials/navbar', {links: ['Cloud', 'Search', 'Logout']}) %>
     <% if (errors) { %>
         <%- include('partials/errors', { errors: errors }) %>
     <% } %>
 
-    <h1>File Details</h1>
-    <h2>Name: <%= file.name %></h2>
-    <h2>Type: <%= file.type %></h2>
-    <h2>Size: <%= file.size %> bytes</h2>
-    <% if (file.tags) { %>
-        <h2>Tags: <%= file.tags %></h2>
-    <% } %>
-    <button>
-        <h1>
-            <a href=<%= `/cloud/${file.id}/download` %> >Download</a>
-        </h1>
-    </button>
+    <h1>Tag Details</h1>
+    <h2><%= tag.name %></h2>
 
-    <%- include('partials/previous-folder', {previousURL: previousFolder}) %> 
+    <% if (folders && folders.length) { %> 
+        <%- include('partials/folders', {folders: folders, previousURL: "/search"}) %> 
+    <% } else { %>
+        <h2>(Not connected to any folders)</h2>
+    <% } %>
+
+    <% if (files && files.length) { %> 
+        <%- include('partials/files', {files: files, previousURL: "/search"}) %> 
+    <% } else { %>
+        <h2>(No connected to any files)</h2>
+    <% } %>
 
 </body>
 </html>

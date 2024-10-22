@@ -116,7 +116,7 @@ export const tagQueries = {
     });
   },
 
-  searchItemsForTerm: async (searchTerm) => {
+  searchAll: async (searchTerm) => {
     return prisma.$transaction(async () => {
       const [tags, files, folders] = await Promise.all([
         prisma.tag.findMany({
@@ -184,7 +184,7 @@ export const tagQueries = {
     });
   },
 
-  searchItemsForTag: async (tag) => {
+  searchItemsForTerm: async (tag) => {
     return prisma.$transaction(async () => {
       const [files, folders] = await Promise.all([
         prisma.file.findMany({
@@ -205,6 +205,49 @@ export const tagQueries = {
             tags: {
               some: {
                 name: tag,
+              },
+            },
+          },
+          select: {
+            name: true,
+            id: true,
+          },
+        }),
+      ]);
+
+      return { files, folders };
+    });
+  },
+
+  getTag: async (tagId) => {
+    return prisma.tag.findUnique({
+      where: {
+        id: tagId,
+      },
+    });
+  },
+
+  getItemsByTag: async (tagId) => {
+    return prisma.$transaction(async () => {
+      const [files, folders] = await Promise.all([
+        prisma.file.findMany({
+          where: {
+            tags: {
+              some: {
+                id: tagId,
+              },
+            },
+          },
+          select: {
+            name: true,
+            id: true,
+          },
+        }),
+        prisma.folder.findMany({
+          where: {
+            tags: {
+              some: {
+                id: tagId,
               },
             },
           },
@@ -271,6 +314,17 @@ export const folderQueries = {
     return prisma.folder.findUnique({
       where: {
         id: folderId,
+      },
+    });
+  },
+
+  getFolderAndTags: (folderId) => {
+    return prisma.folder.findUnique({
+      where: {
+        id: folderId,
+      },
+      include: {
+        tags: true,
       },
     });
   },
@@ -404,6 +458,17 @@ export const fileQueries = {
     return prisma.file.findUnique({
       where: {
         id: fileId,
+      },
+    });
+  },
+
+  getFileTags: (fileId) => {
+    return prisma.file.findUnique({
+      where: {
+        id: fileId,
+      },
+      select: {
+        tags: true,
       },
     });
   },
