@@ -1,4 +1,5 @@
 import { folderQueries, fileQueries, tagQueries } from "../queries/queries.js";
+import { cleanTags } from "../lib/cleanTags.js";
 import { prisma, supabase } from "../app.js";
 
 export const storageController = {
@@ -39,12 +40,14 @@ export const storageController = {
 
   createFolder: async (req, res, next) => {
     const currentParentFolder = req.params.folderId;
+    const tags = cleanTags(req.body.tags);
+    console.log({ tags });
 
     const newFolder = await folderQueries.createFolderWithRelations(
       req.body.name,
       req.user.id,
       currentParentFolder,
-      req.body.tags.split(",").map((tag) => tag.trim()),
+      tags,
     );
 
     res.redirect(`/cloud/${newFolder.id}`);
@@ -261,6 +264,18 @@ export const storageController = {
       errors: null,
       file: file,
       previousFolder: parentFolder?.folderId || "",
+    });
+  },
+
+  searchAll: async (req, res) => {
+    const searchTerm = req.body.searchTerm;
+    const { tags, files, folders } = await tagQueries.searchTags(searchTerm);
+    console.log({ tags, files, folders });
+    res.render("search", {
+      errors: null,
+      tags: tags,
+      files: files,
+      folders: folders,
     });
   },
 

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloud | Search</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <%- include('partials/navbar', {links: ['cloud', 'search', 'logout']}) %>
+    <% if (errors) { %>
+        <%- include('partials/errors', { errors: errors }) %>
+    <% } %>
+
+    <h1>Search your tags, files, and folders</h1>
+    <form action="/search" method="post">
+        <label for="searchTerm">
+            <input type="text" name="searchTerm" id="searchTerm">
+            <button>Search</button>
+        </label>
+    </form>
+
+    <% if (tags && tags.length) { %> 
+        <%- include('partials/tags', {tags: tags, previousURL: "/search"}) %> 
+    <% } else { %>
+        <h2>(No tags found)</h2>
+    <% } %>
+
+    <% if (folders && folders.length) { %> 
+        <%- include('partials/folders', {folders: folders, previousURL: "/search"}) %> 
+    <% } else { %>
+        <h2>(No folders found)</h2>
+    <% } %>
+
+    <% if (files && files.length) { %> 
+        <%- include('partials/files', {files: files, previousURL: "/search"}) %> 
+    <% } else { %>
+        <h2>(No files found)</h2>
+    <% } %>
+
+</body>
+</html>

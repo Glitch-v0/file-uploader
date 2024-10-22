@@ -19,6 +19,7 @@ router.use(isAuthenticated); // Protect all routes below
 
 // Cloud routes
 router.get("/cloud", storageController.getRootDirectoryData);
+
 router.get("/cloud/:folderId", asyncHandler(storageController.getFolderData));
 router.post(
   // upload to root directory
@@ -73,6 +74,17 @@ router.get(
   "/cloud/:folderId?/:fileId/view",
   asyncHandler(storageController.viewFile),
 );
+
+router.get("/search", (req, res, next) => {
+  res.render("search", {
+    errors: null,
+    tags: null,
+    folders: null,
+    files: null,
+  });
+});
+
+router.post("/search", asyncHandler(storageController.searchAll));
 
 router.use((err, req, res, next) => {
   console.error(err.stack);

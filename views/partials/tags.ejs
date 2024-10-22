@@ -1,0 +1,26 @@
+<% if (tags) { %>
+    <div>
+      <h2>Tags</h2>
+      <div class="tag-container">
+        <% tags.forEach(tag => { %>
+        <div class="tag-card">
+          <a href=<%=`/tag/${tag.id}`%>>
+            <img class="icon" src="/icons/tag.svg" alt="tag icon" />
+          </a>
+          <h3 class="tag-name">
+            <a href=<%=`/tag/${tag.id}`%>>
+              <%= tag.name %>
+            </a>          
+          </h3>
+          <a href="/cloud/<%= tag.id %>/deleteTag">
+            <img class="icon delete" src="/icons/delete.svg" alt="delete icon" />
+          </a>
+          <a href="/cloud/<%= tag.id %>/updateTag">
+            <img class="icon update" src="/icons/pencil.svg" alt="folder update">
+          </a>
+        </div>
+        <% }) %>
+      </div>
+    </div>
+  <% } %>
+  

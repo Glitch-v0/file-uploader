@@ -152,7 +152,8 @@ nav a {
 }
 
 .folder-card,
-.file-card {
+.file-card,
+.tag-card {
   display: grid;
   grid-template-columns: 1fr 3fr 1fr 1fr;
   background-color: var(--form-background-color); /* Card background color */
