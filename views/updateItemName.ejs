@@ -15,11 +15,16 @@
     <form action="<%= submissionURL %>" method="POST">
         <% if (type == 'folder') { %>
             <img class="icon" src="/icons/folder.svg" alt="folder icon" />
+        <% } else if (type == 'tag') { %>
+            <img class="icon" src="/icons/tag.svg" alt="tag icon" />
         <% } else { %>
             <img class="icon" src="/icons/file.svg" alt="file icon" />
         <% } %>
         <h3><%= item.name %> </h3>
         <input type="text" name="name" placeholder="New Name" required>
+        <% if (type == 'tag') { %>
+            <p>Will update tag name in <b>all</b> files and folders</p>         
+        <% } %>
         <button>Update Name</button>
     </form>
 

@@ -261,6 +261,26 @@ export const tagQueries = {
       return { files, folders };
     });
   },
+
+  updateTagName: async (tagId, newName) => {
+    console.log({ tagId, newName });
+    return prisma.tag.update({
+      where: {
+        id: tagId,
+      },
+      data: {
+        name: newName,
+      },
+    });
+  },
+
+  deleteTag: async (tagId) => {
+    return prisma.tag.delete({
+      where: {
+        id: tagId,
+      },
+    });
+  },
 };
 
 export const folderQueries = {

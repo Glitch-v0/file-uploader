@@ -23,7 +23,6 @@ export const storageController = {
     if (folderParameter == undefined) return res.redirect("/cloud");
     const parentFolder = await folderQueries.getFolderAndTags(folderParameter);
     const parentFolderTags = parentFolder.tags;
-    console.log({ parentFolder });
     if (!parentFolder) {
       return res.redirect("/cloud");
     }
@@ -78,6 +77,18 @@ export const storageController = {
     });
   },
 
+  getTagUpdateForm: async (req, res, next) => {
+    console.log(req.params.tagId);
+    const tag = await tagQueries.getTag(parseInt(req.params.tagId));
+    res.render("updateItemName", {
+      errors: null,
+      item: tag,
+      type: "tag",
+      submissionURL: req.originalUrl,
+      previousFolder: null,
+    });
+  },
+
   updateFolder: async (req, res, next) => {
     const folder = await folderQueries.updateFolderName(
       req.params.folderId,
@@ -128,6 +139,15 @@ export const storageController = {
     res.redirect(`/cloud`);
   },
 
+  updateTag: async (req, res, next) => {
+    console.log();
+    const tag = await tagQueries.updateTagName(
+      parseInt(req.params.tagId),
+      req.body.name,
+    );
+    res.redirect(`/tag/${tag.id}`);
+  },
+
   deleteFolder: async (req, res, next) => {
     // Recursively get all child folders and files
     const folderIds = await folderQueries.getAllFolderIds(req.params.folderId);
@@ -170,6 +190,11 @@ export const storageController = {
     if (!success) {
       throw new Error("Failed to delete file");
     }
+    res.redirect("/cloud");
+  },
+
+  deleteTag: async (req, res, next) => {
+    await tagQueries.deleteTag(parseInt(req.params.tagId));
     res.redirect("/cloud");
   },
 
@@ -239,7 +264,6 @@ export const storageController = {
     if (!file) return res.redirect("/cloud");
     const parentFolder = await fileQueries.getParentFolder(req.params.fileId);
     const fileTags = await fileQueries.getFileTags(req.params.fileId);
-    console.log({ fileTags });
 
     res.render("file-details", {
       errors: null,
@@ -251,9 +275,7 @@ export const storageController = {
 
   viewTags: async (req, res) => {
     const tag = await tagQueries.getTag(parseInt(req.params.tagId));
-    console.log({ tag });
     const { files, folders } = await tagQueries.getItemsByTag(tag.id);
-    console.log({ files, folders });
     res.render("tag-details", {
       errors: null,
       tag: tag,

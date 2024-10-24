@@ -76,6 +76,18 @@ router.get(
 );
 
 router.get("/tag/:tagId", asyncHandler(storageController.viewTags));
+router.get(
+  "/cloud/:tagId/updateTag",
+  asyncHandler(storageController.getTagUpdateForm),
+);
+router.post(
+  "/cloud/:tagId/updateTag",
+  asyncHandler(storageController.updateTag),
+);
+router.get(
+  "/cloud/:tagId/deleteTag",
+  asyncHandler(storageController.deleteTag),
+);
 
 router.get("/search", (req, res, next) => {
   res.render("search", {
