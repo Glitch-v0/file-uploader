@@ -5,6 +5,10 @@ import { PrismaClient } from "@prisma/client";
 import { createClient } from "@supabase/supabase-js";
 import passport from "passport";
 import router from "./routes/routes.js";
+import tagRouter from "./routes/tagRoutes.js";
+import fileRouter from "./routes/fileRoutes.js";
+import folderRouter from "./routes/folderRoutes.js";
+import userRouter from "./routes/userRoutes.js";
 import path from "node:path";
 import { fileURLToPath } from "url";
 import "./config/passport.js";
@@ -55,15 +59,10 @@ const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_SERVICE_KEY;
 export const supabase = createClient(supabaseUrl, supabaseKey);
 
-// app.use((req, res, next) => {
-//   console.log(
-//     `\n[${new Date().toISOString()}] ${req.method} ${req.originalUrl}`
-//   );
-//   // console.log("Params:", req.params);
-//   // console.log("Query:", req.query);
-//   // console.log("Body:", req.body);
-//   next();
-// });
+app.use(userRouter);
+app.use(folderRouter);
+app.use(fileRouter);
+app.use(tagRouter);
 app.use(router);
 
 app.listen(3000, () => console.log("Server running on port 3000"));

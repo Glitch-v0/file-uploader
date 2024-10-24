@@ -16,13 +16,13 @@
     <h2><%= tag.name %></h2>
 
     <% if (folders && folders.length) { %> 
-        <%- include('partials/folders', {folders: folders, previousURL: "/search"}) %> 
+        <%- include('partials/folders', {folders: folders}) %> 
     <% } else { %>
         <h2>(Not connected to any folders)</h2>
     <% } %>
 
     <% if (files && files.length) { %> 
-        <%- include('partials/files', {files: files, previousURL: "/search"}) %> 
+        <%- include('partials/files', {files: files}) %> 
     <% } else { %>
         <h2>(No connected to any files)</h2>
     <% } %>

@@ -19,11 +19,10 @@
     <% if (tags) { %>
         <%- include('partials/tags', {tags: tags.tags}) %> 
     <% } %>
+    <%- include('partials/addTag', {submissionURL: `/cloud/${file.id}/addFileTag` }) %>
     <h1>
         <a href= <%= `/cloud/${file.id}/download` %> class="download" >Download</a>
     </h1>
-
-    <%- include('partials/previous-folder', {previousURL: previousFolder}) %> 
 
 </body>
 </html>

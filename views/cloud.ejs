@@ -25,19 +25,15 @@
         <% } %>
         
         <% if (folders && folders.length) { %> 
-          <%- include('partials/folders', {folders: folders, previousURL: previousFolder}) %> 
+          <%- include('partials/folders', {folders: folders}) %> 
         <% } else { %>
           <h2>(No folders here)</h2>
         <% } %>
   
         <% if (files && files.length) { %> 
-          <%- include('partials/files', {files: files, previousURL: previousFolder}) %> 
+          <%- include('partials/files', {files: files}) %> 
         <% } else { %>
           <h2>(No files here)</h2>
-        <% } %>
-
-        <% if (previousFolder) { %>
-          <%- include('partials/previous-folder', {previousURL: previousFolder}) %> 
         <% } %>
       </div>
 

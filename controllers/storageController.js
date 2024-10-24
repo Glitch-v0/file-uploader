@@ -14,7 +14,6 @@ export const storageController = {
       currentFolder: null,
       currentFolderTags: null,
       currentURL: "/cloud",
-      previousFolder: null,
     });
   },
 
@@ -37,7 +36,6 @@ export const storageController = {
       currentFolder: parentFolder,
       currentFolderTags: parentFolderTags,
       currentURL: req.originalUrl,
-      previousFolder: parentFolder.parentFolderId || " ",
     });
   },
 
@@ -55,6 +53,11 @@ export const storageController = {
     res.redirect(`/cloud/${newFolder.id}`);
   },
 
+  createTag: async (req, res, next) => {
+    const newTag = await tagQueries.createTag(req.body.newTagName, req.user.id);
+    res.redirect(`/tag/${newTag.id}`);
+  },
+
   getFolderUpdateForm: async (req, res, next) => {
     const folder = await folderQueries.getFolder(req.params.folderId);
     res.render("updateItemName", {
@@ -62,7 +65,6 @@ export const storageController = {
       item: folder,
       type: "folder",
       submissionURL: req.originalUrl,
-      previousFolder: folder.parentFolderId || " ",
     });
   },
 
@@ -73,7 +75,6 @@ export const storageController = {
       item: file,
       type: "file",
       submissionURL: req.originalUrl,
-      previousFolder: file.folderId || " ",
     });
   },
 
@@ -85,7 +86,6 @@ export const storageController = {
       item: tag,
       type: "tag",
       submissionURL: req.originalUrl,
-      previousFolder: null,
     });
   },
 
@@ -112,7 +112,6 @@ export const storageController = {
         item: file,
         type: "file",
         submissionURL: req.originalUrl,
-        previousFolder: file.folderId || " ",
       });
     }
 
@@ -236,7 +235,6 @@ export const storageController = {
         folders: [],
         currentFolder: null,
         currentURL: req.originalUrl,
-        previousFolder: null,
       });
     }
 
@@ -268,7 +266,6 @@ export const storageController = {
     res.render("file-details", {
       errors: null,
       file: file,
-      previousFolder: parentFolder?.folderId || "",
       tags: fileTags,
     });
   },
@@ -305,7 +302,6 @@ export const storageController = {
       res.render("file-details", {
         errors: [error.message],
         file: file,
-        previousFolder: parentFolder?.folderId || "",
       });
     } else {
       // Set the appropriate headers for file download
