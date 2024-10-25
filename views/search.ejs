@@ -20,22 +20,24 @@
         </label>
     </form>
 
-    <% if (tags && tags.length) { %> 
-        <%- include('partials/tags', {tags: tags, previousURL: "/search"}) %> 
-    <% } else { %>
-        <h2>(No tags found)</h2>
-    <% } %>
-
-    <% if (folders && folders.length) { %> 
-        <%- include('partials/folders', {folders: folders, previousURL: "/search"}) %> 
-    <% } else { %>
-        <h2>(No folders found)</h2>
-    <% } %>
-
-    <% if (files && files.length) { %> 
-        <%- include('partials/files', {files: files, previousURL: "/search"}) %> 
-    <% } else { %>
-        <h2>(No files found)</h2>
+    <% if (searchMade) { %>
+        <% if (tags && tags.length) { %> 
+            <%- include('partials/tags', {tags: tags, previousURL: "/search"}) %> 
+        <% } else { %>
+            <h2>(No tags found)</h2>
+        <% } %>
+    
+        <% if (folders && folders.length) { %> 
+            <%- include('partials/folders', {folders: folders, previousURL: "/search"}) %> 
+        <% } else { %>
+            <h2>(No folders found)</h2>
+        <% } %>
+    
+        <% if (files && files.length) { %> 
+            <%- include('partials/files', {files: files, previousURL: "/search"}) %> 
+        <% } else { %>
+            <h2>(No files found)</h2>
+        <% } %>
     <% } %>
 
 </body>

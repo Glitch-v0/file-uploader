@@ -289,6 +289,7 @@ export const storageController = {
       tags: tags,
       files: files,
       folders: folders,
+      searchMade: true,
     });
   },
 

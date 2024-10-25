@@ -4,11 +4,12 @@ import { PrismaSessionStore } from "@quixo3/prisma-session-store";
 import { PrismaClient } from "@prisma/client";
 import { createClient } from "@supabase/supabase-js";
 import passport from "passport";
-import router from "./routes/routes.js";
+import otherRoutes from "./routes/otherRoutes.js";
 import tagRouter from "./routes/tagRoutes.js";
 import fileRouter from "./routes/fileRoutes.js";
 import folderRouter from "./routes/folderRoutes.js";
 import userRouter from "./routes/userRoutes.js";
+import { isAuthenticated } from "./middleware/authRoute.js";
 import path from "node:path";
 import { fileURLToPath } from "url";
 import "./config/passport.js";
@@ -59,11 +60,14 @@ const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_SERVICE_KEY;
 export const supabase = createClient(supabaseUrl, supabaseKey);
 
-app.use(userRouter);
-app.use(folderRouter);
-app.use(fileRouter);
-app.use(tagRouter);
-app.use(router);
+app.use([
+  userRouter,
+  isAuthenticated,
+  folderRouter,
+  fileRouter,
+  tagRouter,
+  otherRoutes,
+]);
 
 app.listen(3000, () => console.log("Server running on port 3000"));
 
