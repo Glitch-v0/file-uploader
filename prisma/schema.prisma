@@ -44,6 +44,8 @@ model File {
   size       Int
   type       String
 
+  shareExpirationDate DateTime? @db.Timestamptz()
+
   tags Tag[]
 
   @@index([ownerId])
@@ -55,13 +57,16 @@ model Folder {
   owner        User     @relation(fields: [ownerId], references: [id])
   ownerId      String   @db.Uuid
   creationDate DateTime @default(now()) @db.Timestamptz()
-  files        File[]
-  tags         Tag[]
+
+  files File[]
+  tags  Tag[]
 
   // Folder nesting
   parentFolder   Folder?  @relation("FolderToFolder", fields: [parentFolderId], references: [id])
   parentFolderId String?  @db.Uuid
   childFolders   Folder[] @relation("FolderToFolder")
+
+  shareExpirationDate DateTime? @db.Timestamptz()
 
   @@index([ownerId])
 }

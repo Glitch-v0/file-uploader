@@ -7,41 +7,38 @@
     <link rel="stylesheet" href="/style.css" />
   </head>
   <body>
-    <body>
-      <%- include('partials/navbar', {links: ['cloud', 'search', 'logout']}) %> 
-      <% if (errors) { %> 
-        <%- include('partials/errors', { errors: errors }) %> 
-      <% } %>
-    
-      
-      
-      <div class="viewContainer">
-        <% if (currentFolder) { %>
-          <h1>Viewing "<%= currentFolder.name %>"</h1>
-        <% } %>
-
-        <% if (currentFolderTags) { %>
-          <%- include('partials/tags', {tags: currentFolderTags}) %> 
-        <% } %>
-        
-        <% if (folders && folders.length) { %> 
-          <%- include('partials/folders', {folders: folders}) %> 
-        <% } else { %>
-          <h2>(No folders here)</h2>
-        <% } %>
+    <%- include('partials/navbar', {links: ['cloud', 'search', 'logout']}) %> 
+    <% if (errors) { %> 
+      <%- include('partials/errors', { errors: errors }) %> 
+    <% } %>
   
-        <% if (files && files.length) { %> 
-          <%- include('partials/files', {files: files}) %> 
-        <% } else { %>
-          <h2>(No files here)</h2>
-        <% } %>
-      </div>
-
-      <div class="creation-container">
-        <%- include('partials/createFolder', {submissionURL: currentURL}) %>
-        <%- include('partials/fileUploadForm', {submissionURL: currentURL}) %>
-      </div>
-    </body>
     
+    
+    <div class="viewContainer">
+      <% if (currentFolder) { %>
+        <h1>Viewing "<%= currentFolder.name %>"</h1>
+      <% } %>
+
+      <% if (currentFolderTags) { %>
+        <%- include('partials/tags', {tags: currentFolderTags}) %> 
+      <% } %>
+      
+      <% if (folders && folders.length) { %> 
+        <%- include('partials/folders', {folders: folders}) %> 
+      <% } else { %>
+        <h2>(No folders here)</h2>
+      <% } %>
+
+      <% if (files && files.length) { %> 
+        <%- include('partials/files', {files: files}) %> 
+      <% } else { %>
+        <h2>(No files here)</h2>
+      <% } %>
+    </div>
+
+    <div class="creation-container">
+      <%- include('partials/createFolder', {submissionURL: currentURL}) %>
+      <%- include('partials/fileUploadForm', {submissionURL: currentURL}) %>
+    </div>
   </body>
 </html>
