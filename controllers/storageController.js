@@ -263,7 +263,7 @@ export const storageController = {
     const parentFolder = await fileQueries.getParentFolder(req.params.fileId);
     const fileTags = await fileQueries.getFileTags(req.params.fileId);
 
-    res.render("file-details", {
+    res.render("fileDetails", {
       errors: null,
       file: file,
       tags: fileTags,
@@ -273,7 +273,7 @@ export const storageController = {
   viewTags: async (req, res) => {
     const tag = await tagQueries.getTag(parseInt(req.params.tagId));
     const { files, folders } = await tagQueries.getItemsByTag(tag.id);
-    res.render("tag-details", {
+    res.render("tagDetails", {
       errors: null,
       tag: tag,
       files: files,
