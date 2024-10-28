@@ -1,6 +1,6 @@
 import { folderQueries, fileQueries, tagQueries } from "../queries/queries.js";
 import { cleanTags } from "../lib/cleanTags.js";
-import { prisma, supabase } from "../app.js";
+import { supabase } from "../app.js";
 
 export const storageController = {
   getRootDirectoryData: async (req, res) => {
@@ -150,7 +150,7 @@ export const storageController = {
   deleteFolder: async (req, res, next) => {
     // Recursively get all child folders and files
     const folderIds = await folderQueries.getAllFolderIds(req.params.folderId);
-    const fileURLs = await fileQueries.getFilesByFolders(folderIds);
+    const fileURLs = await fileQueries.getFileUrlsByFolders(folderIds);
 
     // Supabase Folder deletion
     const supabaseSuccess = await supabase.storage
@@ -294,6 +294,7 @@ export const storageController = {
   },
 
   downloadFile: async (req, res) => {
+    console.log("Running downloadFile,", req.params);
     const file = await fileQueries.getFileById(req.params.fileId);
 
     const { data, error } = await supabase.storage

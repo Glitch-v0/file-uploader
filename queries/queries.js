@@ -441,6 +441,33 @@ export const folderQueries = {
 
     return folderIds;
   },
+
+  // Share folder and children
+  makeFolderChildrenShareable: async (folderId, days) => {
+    const foldersToChange = await folderQueries.getAllFolderIds(folderId);
+    const filesToChange =
+      await fileQueries.getFileIdsByFolders(foldersToChange);
+    const expirationDate = new Date(Date.now() + days * 24 * 60 * 60 * 1000);
+    console.log({ expirationDate });
+
+    await prisma.folder.updateMany({
+      where: {
+        id: { in: foldersToChange },
+      },
+      data: {
+        shareExpirationDate: expirationDate.toISOString(),
+      },
+    });
+
+    await prisma.file.updateMany({
+      where: {
+        id: { in: filesToChange },
+      },
+      data: {
+        shareExpirationDate: expirationDate.toISOString(),
+      },
+    });
+  },
 };
 
 export const fileQueries = {
@@ -461,7 +488,20 @@ export const fileQueries = {
     });
   },
 
-  getFilesByFolders: async (folderIds) => {
+  getFileIdsByFolders: async (folderIds) => {
+    const files = await prisma.file.findMany({
+      where: {
+        folderId: { in: folderIds },
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    return files.map((file) => file.id);
+  },
+
+  getFileUrlsByFolders: async (folderIds) => {
     const files = await prisma.file.findMany({
       where: {
         folderId: { in: folderIds },

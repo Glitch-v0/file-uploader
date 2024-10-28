@@ -1,0 +1,18 @@
+<% if (files) { %>
+    <div>
+      <h2>Files</h2>
+      <div class="file-container">
+        <% files.forEach(file => { %>
+        <div class="file-card">
+          <img class="icon" src="/icons/file.svg" alt="file" />
+          <h3 class="file-name">
+            <a href="/sharedFile/<%= file.id %>">
+              <%= file.name %>
+            </a>          
+          </h3>
+        </div>
+        <% }) %>
+      </div>
+    </div>
+  <% } %>
+  

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloud | Share Folder</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <form action="/share/folder/<%= sharedFolder.id %>" method="POST">
+        <h1>Share Folder <%= sharedFolder.name %></h1>
+        <img class="icon" src="/icons/folder-plus.svg" alt="folder-plus" />
+        <label for="days">
+            Share Folder for X Days
+            <input type="number" max="30" min="-5" name="days" placeholder="Number of days" />
+        </label>
+        <button type="submit">Create Public Share Link</button>
+    </form>
+</body>
+</html>

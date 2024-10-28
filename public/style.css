@@ -213,6 +213,13 @@ a {
   text-decoration: none; /* Remove underline */
 }
 
+#shareLink {
+  color: var(--font-color);
+  background-color: var(--form-background-color);
+  padding: 1rem;
+  margin: 2rem;
+}
+
 @media screen and (max-width: 800px) {
   .index-forms-container {
     flex-direction: column;

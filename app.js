@@ -9,6 +9,7 @@ import tagRouter from "./routes/tagRoutes.js";
 import fileRouter from "./routes/fileRoutes.js";
 import folderRouter from "./routes/folderRoutes.js";
 import userRouter from "./routes/userRoutes.js";
+import shareRouter from "./routes/shareRouter.js";
 import { isAuthenticated } from "./middleware/authRoute.js";
 import path from "node:path";
 import { fileURLToPath } from "url";
@@ -62,6 +63,7 @@ export const supabase = createClient(supabaseUrl, supabaseKey);
 
 app.use([
   userRouter,
+  shareRouter,
   isAuthenticated,
   folderRouter,
   fileRouter,

@@ -1,0 +1,16 @@
+<div>
+    <h2>Folders</h2>
+    <div class="folder-container">
+      <% folders.forEach(folder => { %>
+      <div class="folder-card">
+        <a href="/sharedFolder/<%= folder.id %>">
+          <img class="icon folder" src="/icons/folder.svg" alt="folder icon">
+        </a>
+        <a href="/sharedFolder/<%= folder.id %>">
+          <h3><%= folder.name %></h3> 
+        </a>     
+      </div>
+      <% }) %>
+    </div>
+  </div>
+  

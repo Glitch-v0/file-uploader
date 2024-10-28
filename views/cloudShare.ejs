@@ -14,19 +14,15 @@
   
     <div class="viewContainer">
       <% if (currentFolder) { %>
-        <h1>Viewing Shared Folder:"<%= currentFolder.name %>"</h1>
+        <h1>Viewing Shared Folder:<br>"<%= currentFolder.name %>"</h1>
       <% } %>
       
       <% if (folders && folders.length) { %> 
         <%- include('partials/folders', {folders: folders}) %> 
-      <% } else { %>
-        <h2>(No folders here)</h2>
       <% } %>
 
       <% if (files && files.length) { %> 
-        <%- include('partials/files', {files: files}) %> 
-      <% } else { %>
-        <h2>(No files here)</h2>
+        <%- include('partials/sharedFiles', {files: files}) %> 
       <% } %>
     </div>
   </body>

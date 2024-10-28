@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloud | Share Link</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <%- include('partials/navbar', {links: ['cloud', 'search', 'logout']}) %>
+    <% if (errors) { %>
+        <%- include('partials/errors', { errors: errors }) %>
+    <% } %>
+    <h1><%= sharedFolder.name %> Share Info:</h1>
+    <h2>Link Expires <%= sharedFolder.shareExpirationDate %></h2>
+    <a id="shareLink" href="/sharedFolder/<%= sharedFolder.id %>">
+        <h2>/viewFolder/<%= sharedFolder.id %></h2>
+    </a>
+</body>
+</html>
