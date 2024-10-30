@@ -16,11 +16,15 @@
     
     <div class="viewContainer">
       <% if (currentFolder) { %>
-        <h1>Viewing "<%= currentFolder.name %>"</h1>
-        <a href="/share/folder/<%= currentFolder.id %>">
-          Share Folder
-          <img class="icon share" src="/icons/share.svg" alt="share icon" />
-        </a>
+        <div class="titleContainer">
+          <h1>Viewing "<%= currentFolder.name %>"</h1>
+          <div class="current-folder-card">
+            <a href="/share/folder/<%= currentFolder.id %>">
+              Share Folder
+            </a>
+            <img class="icon share" src="/icons/share.svg" alt="share icon" />
+        </div>
+        </div>
       <% } %>
 
       <% if (currentFolderTags) { %>
