@@ -79,7 +79,6 @@ export const storageController = {
   },
 
   getTagUpdateForm: async (req, res, next) => {
-    console.log(req.params.tagId);
     const tag = await tagQueries.getTag(parseInt(req.params.tagId));
     res.render("updateItemName", {
       errors: null,
@@ -139,7 +138,6 @@ export const storageController = {
   },
 
   updateTag: async (req, res, next) => {
-    console.log();
     const tag = await tagQueries.updateTagName(
       parseInt(req.params.tagId),
       req.body.name,
@@ -294,7 +292,6 @@ export const storageController = {
   },
 
   downloadFile: async (req, res) => {
-    console.log("Running downloadFile,", req.params);
     const file = await fileQueries.getFileById(req.params.fileId);
 
     const { data, error } = await supabase.storage

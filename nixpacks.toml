@@ -5,4 +5,4 @@ cmds = [
 ]
 
 [start]
-cmd = 'npm start'              # Command to start your app
+cmd = 'node app'              # Command to start your app

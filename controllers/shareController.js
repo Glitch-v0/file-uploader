@@ -2,13 +2,11 @@ import { folderQueries, fileQueries, tagQueries } from "../queries/queries.js";
 
 export const shareController = {
   renderShareForm: async (req, res) => {
-    console.log("Running renderShareForm,", req.params);
     const folder = await folderQueries.getFolder(req.params.folderId);
     res.render("shareForm", { sharedFolder: folder });
   },
 
   renderShareLinkForm: async (req, res) => {
-    console.log("Running renderShareLinkForm,", req.params, req.body);
     const createShareLinks = await folderQueries.makeFolderChildrenShareable(
       req.params.folderId,
       req.body.days,
@@ -21,7 +19,6 @@ export const shareController = {
   },
 
   viewSharedFolder: async (req, res) => {
-    console.log("Running viewSharedFolder,", req.params);
     const folder = await folderQueries.getFolder(req.params.folderId);
 
     // Compare current expiration date with current date
@@ -38,7 +35,6 @@ export const shareController = {
 
     const childFolders = await folderQueries.getFolderChildren(folder.id);
     const childFiles = await fileQueries.getFilesByFolder(folder.id);
-    console.log({ folder, childFolders, childFiles });
     res.render("cloudShare", {
       errors: null,
       currentFolder: folder,
@@ -48,7 +44,6 @@ export const shareController = {
   },
 
   viewSharedFile: async (req, res) => {
-    console.log("Running viewSharedFile,", req.params);
     const file = await fileQueries.getFileById(req.params.fileId);
     res.render("sharedFileDetails", {
       errors: null,

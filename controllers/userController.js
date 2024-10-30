@@ -25,10 +25,8 @@ export const userController = {
           lastName: req.body.lastName,
         },
       });
-      console.log(`New user created! ${newUser}`);
       res.render("index", { errors: null, sentValues: req.body });
     } catch (error) {
-      console.error(error);
       res.render("index", { errors: [error], sentValues: req.body });
     }
   },

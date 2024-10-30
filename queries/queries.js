@@ -57,7 +57,6 @@ export const tagQueries = {
 
     // Skip if no tags
     if (fileTags[0] == "" && fileTags.length == 1) {
-      console.log("No tags provided. Skipping.");
       return;
     }
 
@@ -86,10 +85,8 @@ export const tagQueries = {
   createAndConnectTagsToFolder: async (req, folderId) => {
     // Parse through form tags
     const folderTags = req.body.tags.split(",").map((tag) => tag.trim());
-    console.log({ folderTags });
     // Skip if no tags
     if (folderTags[0] == "" && folderTags.length == 1) {
-      console.log("No tags provided. Skipping.");
       return;
     }
 
@@ -263,7 +260,6 @@ export const tagQueries = {
   },
 
   updateTagName: async (tagId, newName) => {
-    console.log({ tagId, newName });
     return prisma.tag.update({
       where: {
         id: tagId,
@@ -389,7 +385,6 @@ export const folderQueries = {
   },
 
   updateFolderName: (folderId, folderName) => {
-    console.log({ folderId, folderName });
     return prisma.folder.update({
       where: {
         id: folderId,
@@ -448,7 +443,6 @@ export const folderQueries = {
     const filesToChange =
       await fileQueries.getFileIdsByFolders(foldersToChange);
     const expirationDate = new Date(Date.now() + days * 24 * 60 * 60 * 1000);
-    console.log({ expirationDate });
 
     await prisma.folder.updateMany({
       where: {
