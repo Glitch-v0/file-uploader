@@ -11,17 +11,48 @@
     <% if (errors) { %>
         <%- include('partials/errors', { errors: errors }) %>
     <% } %>
+    <div class="viewContainer">
+        <div class="fileTitle">
+            <h1>File Details</h1>
+        </div>
+        <div class="fileInfo">
+            <%  const fileExtension = file.name.includes('.') ? file.name.slice(file.name.lastIndexOf('.')) : ''; %>
+            <div class="fileAttributeContainer">
+                <h2 class="fileAttributeDescription">Name</h2>
+                <h2><%= file.name.length > 32 ? file.name.slice(0, 32) + '...' + fileExtension : file.name %></h2>
+            </div>
+            <div class="fileAttributeContainer">
+                <h2 class="fileAttributeDescription">Type</h2>
+                <h2><%= file.type %></h2>
+            </div>
+            <div class="fileAttributeContainer">
+                <h2 class="fileAttributeDescription">Size</h2>
+                <% 
+                    let displaySize;
+                    if (file.size >= 1000 * 1000) {
+                        displaySize = (file.size / (1000 * 1000)).toFixed(1) + ' MB';
+                    } else if (file.size >= 1000) {
+                        displaySize = (file.size / 1000).toFixed(1) + ' KB';
+                    } else {
+                        displaySize = file.size + ' bytes';
+                    }
+                %>
+                <h2><%= displaySize %></h2>
+            </div>
+        </div>
+        <% if (tags) { %>
+            <%- include('partials/tags', {tags: tags.tags}) %> 
+        <% } %>
+        <%- include('partials/addTag', {submissionURL: `/cloud/${file.id}/addFileTag` }) %>
+        <div class="downloadFile">
+            <h1>
+                <a href= <%= `/cloud/${file.id}/download` %> class="download" >Download</a>
+            </h1>
+        </div>
+    </div>
 
-    <h1>File Details</h1>
-    <h2>Name: <%= file.name %></h2>
-    <h2>Type: <%= file.type %></h2>
-    <h2>Size: <%= file.size %> bytes</h2>
-    <% if (tags) { %>
-        <%- include('partials/tags', {tags: tags.tags}) %> 
-    <% } %>
-    <%- include('partials/addTag', {submissionURL: `/cloud/${file.id}/addFileTag` }) %>
-    <h1>
-        <a href= <%= `/cloud/${file.id}/download` %> class="download" >Download</a>
-    </h1>
+    
+    
+    
 </body>
 </html>

@@ -321,7 +321,6 @@ export const storageController = {
   },
 
   addTagToFile: async (req, res) => {
-    console.log("adding tag");
     const file = await fileQueries.getFileById(req.params.fileId);
     await tagQueries.createAndConnectTagToFile(
       req.body.newTagName,

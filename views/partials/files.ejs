@@ -5,11 +5,12 @@
       <% files.forEach(file => { %>
       <div class="file-card">
         <img class="icon" src="/icons/file.svg" alt="file" />
-        <h3 class="file-name">
+        <p class="file-name">
           <a href="/cloud<%= file.folderId ? `/${file.folderId}` : '' %>/<%= file.id %>/view">
-            <%= file.name %>
+            <%  const fileExtension = file.name.includes('.') ? file.name.slice(file.name.lastIndexOf('.')) : ''; %>
+            <%= file.name.length > 16 ? file.name.slice(0, 16) + '...' + fileExtension : file.name %>
           </a>          
-        </h3>
+        </p>
         <a href="/cloud/<%= file.id %>/deleteFile">
           <img class="icon delete" src="/icons/delete.svg" alt="delete icon" />
         </a>

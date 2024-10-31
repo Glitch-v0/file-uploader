@@ -11,11 +11,11 @@
     <% if (errors) { %>
         <%- include('partials/errors', { errors: errors }) %>
     <% } %>
-
-    <h1>Search your tags, files, and folders</h1>
+    <div class="viewContainer">
+        <h1>Search your tags, files, and folders</h1>
     <form action="/search" method="post">
         <label for="searchTerm">
-            <input type="text" name="searchTerm" id="searchTerm">
+            <input type="text" name="searchTerm" id="searchTerm" placeholder="Term to search">
             <button>Search</button>
         </label>
     </form>
@@ -39,5 +39,6 @@
             <h2>(No files found)</h2>
         <% } %>
     <% } %>
+    </div>
 </body>
 </html>

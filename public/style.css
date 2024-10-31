@@ -1,7 +1,7 @@
 :root {
   --background-color: hsl(211, 50%, 24%);
   --extra-background-color: hsl(214, 39%, 31%);
-  --font-color: hsl(42, 59%, 94%);
+  --font-color: hsl(42, 59%, 95%);
   --accent-color: hsl(35, 50%, 91%);
   --form-background-color: hsl(209, 25%, 51%);
 }
@@ -34,11 +34,11 @@ header h1::first-letter {
 form {
   background-color: var(--form-background-color);
   border-radius: 20px;
-  margin-top: 2rem;
   padding: 1.25rem 1.25rem;
   width: 325px;
   display: flex;
   flex-direction: column;
+  place-items: center;
   gap: 1.25rem;
 }
 
@@ -58,7 +58,7 @@ h1 {
 
 h2 {
   font-size: 2rem;
-  margin: 1rem;
+  margin: 0;
 }
 
 input {
@@ -139,20 +139,29 @@ nav a {
   color: var(--font-color);
 }
 
-.view-container {
+.viewContainer {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  place-items: center;
+}
+
+.viewContainer > *:nth-child(even),
+.viewContainer > *:nth-child(odd) {
+  width: 100vw;
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.viewContainer > *:nth-child(even) {
+  background-color: hsl(211, 50%, 28%);
 }
 
 .titleContainer {
   display: flex;
   place-items: center;
-}
-
-.creation-container {
-  display: flex;
-  gap: 2rem;
 }
 
 .folder-container,
@@ -162,10 +171,6 @@ nav a {
   flex-wrap: wrap;
   gap: 1rem; /* Space between cards */
   justify-content: center; /* Center align cards */
-}
-
-.folder-container {
-  margin-top: 2rem;
 }
 
 .folder-card,
@@ -178,7 +183,6 @@ nav a {
   border: 2px solid var(--extra-background-color); /* Card border */
   border-radius: 8px; /* Rounded corners */
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-  padding: 10px;
   text-align: center;
   place-items: center;
   width: 300px; /* Fixed width for uniformity */
@@ -200,13 +204,16 @@ nav a {
   cursor: pointer;
 }
 
-.folder-card:hover {
+.folder-card:hover,
+.file-card:hover,
+.tag-card:hover,
+.current-folder-card:hover {
   transform: scale(1.05);
 }
 
 .icon {
-  width: 48px;
-  height: 48px;
+  width: 30px;
+  height: 30px;
   place-self: center;
 }
 
@@ -232,9 +239,39 @@ a {
 
 #shareLink {
   color: var(--font-color);
-  background-color: var(--form-background-color);
   padding: 1rem;
   margin: 2rem;
+}
+
+.share-button {
+  width: 25%;
+}
+
+.fileInfo {
+  display: flex;
+  flex-direction: column;
+  text-align: start;
+}
+
+.fileAttributeContainer {
+  display: grid;
+  width: clamp(100px, 100%, 400px);
+  grid-template-columns: 1fr 1fr;
+  place-self: center;
+
+  h2 {
+    font-size: 1.5rem;
+  }
+  h2.fileAttributeDescription::before {
+    content: "- ";
+  }
+}
+
+#creation-container {
+  display: flex;
+  flex-direction: row;
+  place-content: center;
+  gap: 2rem;
 }
 
 @media screen and (max-width: 800px) {
@@ -242,7 +279,8 @@ a {
     flex-direction: column;
   }
 
-  .creation-container {
+  #creation-container {
     flex-direction: column;
+    place-items: center;
   }
 }

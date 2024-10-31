@@ -18,12 +18,6 @@
       <% if (currentFolder) { %>
         <div class="titleContainer">
           <h1>Viewing "<%= currentFolder.name %>"</h1>
-          <div class="current-folder-card">
-            <a href="/share/folder/<%= currentFolder.id %>">
-              Share Folder
-            </a>
-            <img class="icon share" src="/icons/share.svg" alt="share icon" />
-        </div>
         </div>
       <% } %>
 
@@ -42,11 +36,22 @@
       <% } else { %>
         <h2>(No files here)</h2>
       <% } %>
-    </div>
 
-    <div class="creation-container">
-      <%- include('partials/createFolder', {submissionURL: currentURL}) %>
-      <%- include('partials/fileUploadForm', {submissionURL: currentURL}) %>
+      <% if (currentFolder) { %>
+        <div class="current-folder-card share-button">
+          <h2>
+            <a href="/share/folder/<%= currentFolder.id %>">
+              Share Folder
+              <img class="icon share" src="/icons/share.svg" alt="share icon" />
+            </a>
+          </h2>
+      </div>
+      <% } %>
+  
+      <div id="creation-container">
+        <%- include('partials/createFolder', {submissionURL: currentURL}) %>
+        <%- include('partials/fileUploadForm', {submissionURL: currentURL}) %>
+      </div>
     </div>
   </body>
 </html>

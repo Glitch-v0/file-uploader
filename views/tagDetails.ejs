@@ -12,19 +12,24 @@
         <%- include('partials/errors', { errors: errors }) %>
     <% } %>
 
-    <h1>Tag Details</h1>
-    <h2><%= tag.name %></h2>
+    <div class="viewContainer">
+        <div class="titleContainer">
+            <h1>Tag Details</h1>
+            <h2><%= tag.name %></h2>
+        </div>
 
-    <% if (folders && folders.length) { %> 
-        <%- include('partials/folders', {folders: folders}) %> 
-    <% } else { %>
-        <h2>(Not connected to any folders)</h2>
-    <% } %>
+        <% if (folders && folders.length) { %> 
+            <%- include('partials/folders', {folders: folders}) %> 
+        <% } else { %>
+            <h2>(Not connected to any folders)</h2>
+        <% } %>
 
-    <% if (files && files.length) { %> 
-        <%- include('partials/files', {files: files}) %> 
-    <% } else { %>
-        <h2>(No connected to any files)</h2>
-    <% } %>
+        <% if (files && files.length) { %> 
+            <%- include('partials/files', {files: files}) %> 
+        <% } else { %>
+            <h2>(No connected to any files)</h2>
+        <% } %>
+        </div>
+
 </body>
 </html>
