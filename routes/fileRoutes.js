@@ -46,4 +46,9 @@ fileRouter.get(
   asyncHandler(storageController.viewFile),
 );
 
+fileRouter.post(
+  "/cloud/:fileId/addFileTag",
+  asyncHandler(storageController.addTagToFile),
+);
+
 export default fileRouter; // Export

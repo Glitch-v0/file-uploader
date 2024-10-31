@@ -319,4 +319,15 @@ export const storageController = {
       res.send(buffer);
     }
   },
+
+  addTagToFile: async (req, res) => {
+    console.log("adding tag");
+    const file = await fileQueries.getFileById(req.params.fileId);
+    await tagQueries.createAndConnectTagToFile(
+      req.body.newTagName,
+      req.params.fileId,
+      req.user.id,
+    );
+    res.redirect(`/cloud/${file.id}/view`);
+  },
 };

@@ -112,6 +112,34 @@ export const tagQueries = {
       },
     });
   },
+  createAndConnectTagToFile: async (tag, fileId, userId) => {
+    // Skip if no tags
+    if (!tag) {
+      return;
+    }
+
+    return prisma.file.update({
+      where: {
+        id: fileId,
+      },
+      data: {
+        tags: {
+          connectOrCreate: {
+            where: {
+              ownerId_name: {
+                name: tag,
+                ownerId: userId,
+              },
+            },
+            create: {
+              name: tag,
+              ownerId: userId,
+            },
+          },
+        },
+      },
+    });
+  },
 
   searchAll: async (searchTerm) => {
     return prisma.$transaction(async () => {
