@@ -1,7 +1,0 @@
-[phases.build]
-cmds = [
-    'npx prisma generate',
-    'npx prisma migrate deploy'
-]
-[start]
-cmd = 'node app'         
