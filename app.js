@@ -65,8 +65,8 @@ app.use([
   userRouter,
   shareRouter,
   isAuthenticated,
-  folderRouter,
   fileRouter,
+  folderRouter,
   tagRouter,
   otherRoutes,
 ]);
