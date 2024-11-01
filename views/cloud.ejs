@@ -28,16 +28,17 @@
       <% if (folders && folders.length) { %> 
         <%- include('partials/folders', {folders: folders}) %> 
       <% } else { %>
-        <h2>(No folders here)</h2>
+        <h2>(No folders)</h2>
       <% } %>
 
       <% if (files && files.length) { %> 
         <%- include('partials/files', {files: files}) %> 
       <% } else { %>
-        <h2>(No files here)</h2>
+        <h2>(No files)</h2>
       <% } %>
 
       <% if (currentFolder) { %>
+        <%- include('partials/addTag', {submissionURL: `/cloud/${currentFolder.id}/addFolderTag`}) %>
         <div class="current-folder-card share-button">
           <h2>
             <a href="/share/folder/<%= currentFolder.id %>">

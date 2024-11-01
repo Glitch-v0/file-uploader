@@ -34,4 +34,9 @@ folderRouter.get(
   asyncHandler(storageController.deleteFolder),
 );
 
+folderRouter.post(
+  "/cloud/:folderId?/addFolderTag",
+  asyncHandler(storageController.addTagToFolder),
+);
+
 export default folderRouter;

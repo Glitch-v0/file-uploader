@@ -329,4 +329,14 @@ export const storageController = {
     );
     res.redirect(`/cloud/${file.id}/view`);
   },
+
+  addTagToFolder: async (req, res) => {
+    const folder = await folderQueries.getFolder(req.params.folderId);
+    await tagQueries.createAndConnectTagToFolder(
+      req.body.newTagName,
+      req.params.folderId,
+      req.user.id,
+    );
+    res.redirect(`/cloud/${folder.id}`);
+  },
 };

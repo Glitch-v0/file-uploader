@@ -140,6 +140,34 @@ export const tagQueries = {
       },
     });
   },
+  createAndConnectTagToFolder: async (tag, folderId, userId) => {
+    // Skip if no tags
+    if (!tag) {
+      return;
+    }
+
+    return prisma.folder.update({
+      where: {
+        id: folderId,
+      },
+      data: {
+        tags: {
+          connectOrCreate: {
+            where: {
+              ownerId_name: {
+                name: tag,
+                ownerId: userId,
+              },
+            },
+            create: {
+              name: tag,
+              ownerId: userId,
+            },
+          },
+        },
+      },
+    });
+  },
 
   searchAll: async (searchTerm) => {
     return prisma.$transaction(async () => {

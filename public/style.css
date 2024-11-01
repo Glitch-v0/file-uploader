@@ -4,6 +4,7 @@
   --font-color: hsl(42, 59%, 95%);
   --accent-color: hsl(35, 50%, 91%);
   --form-background-color: hsl(209, 25%, 51%);
+  --nav-background-color: #80acd5;
 }
 
 body {
@@ -119,7 +120,7 @@ form button {
 nav {
   width: 100%;
   font-size: 1.5rem;
-  background-color: var(--form-background-color);
+  background-color: var(--nav-background-color);
   font-weight: bold;
   padding: 0;
 }
@@ -265,6 +266,17 @@ a {
   h2.fileAttributeDescription::before {
     content: "- ";
   }
+}
+
+.newTagInput,
+.newTagButton {
+  width: clamp(250px, 50%, 30%);
+}
+
+.newTagForm {
+  background-color: none;
+  display: grid;
+  place-items: center;
 }
 
 #creation-container {
