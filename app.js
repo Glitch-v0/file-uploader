@@ -15,6 +15,7 @@ import path from "node:path";
 import { fileURLToPath } from "url";
 import "./config/passport.js";
 import dotenv from "dotenv";
+import compression from "compression";
 dotenv.config();
 
 const app = express();
@@ -60,6 +61,19 @@ app.use(passport.session());
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_SERVICE_KEY;
 export const supabase = createClient(supabaseUrl, supabaseKey);
+
+// Reduces response size
+app.use(
+  compression({
+    filter: (req, res) => {
+      if (req.headers["x-no-compression"]) {
+        return false;
+      }
+      // fallback to standard filter function
+      return compression.filter(req, res);
+    },
+  }),
+);
 
 app.use([
   userRouter,
