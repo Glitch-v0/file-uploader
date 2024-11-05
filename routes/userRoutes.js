@@ -1,13 +1,17 @@
 import express from "express";
 import { userController } from "../controllers/userController.js";
+import expressAsyncHandler from "express-async-handler";
 
 const userRouter = express.Router();
 
 // User routes
-userRouter.get("/", userController.renderLogin);
-userRouter.post("/", userController.registerUser);
-userRouter.post("/login", userController.loginUser);
-userRouter.get("/login-failure", userController.renderLoginFailure);
-userRouter.get("/logout", userController.logoutUser);
+userRouter.get("/", expressAsyncHandler(userController.renderLogin));
+userRouter.post("/", expressAsyncHandler(userController.registerUser));
+userRouter.post("/login", expressAsyncHandler(userController.loginUser));
+userRouter.get(
+  "/login-failure",
+  expressAsyncHandler(userController.renderLoginFailure),
+);
+userRouter.get("/logout", expressAsyncHandler(userController.logoutUser));
 
 export default userRouter;
